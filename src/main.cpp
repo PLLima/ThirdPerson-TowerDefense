@@ -298,17 +298,25 @@ int main(int argc, char* argv[])
     LoadShadersFromFiles();
 
     // Carregamos duas imagens para serem utilizadas como textura
-    LoadTextureImage("../../assets/ground/grass/grass_dif.jpeg"); // TextureImage0
-    LoadTextureImage("../../assets/ground/road/road.jpg"); // TextureImage1
+    //LoadTextureImage("../../assets/ground/grass/grass_dif.jpeg"); // TextureImage0
+    //LoadTextureImage("../../assets/ground/road/road.jpg"); // TextureImage1
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
-    ObjModel grassmodel("../../assets/ground/grass/grass.obj");
-    ComputeNormals(&grassmodel);
-    BuildTrianglesAndAddToVirtualScene(&grassmodel);
+    // ObjModel grassmodel("../../assets/ground/grass/grass.obj");
+    // ComputeNormals(&grassmodel);
+    // BuildTrianglesAndAddToVirtualScene(&grassmodel);
 
     // ObjModel roadmodel("../../assets/ground/road/road.obj");
     // ComputeNormals(&roadmodel);
     // BuildTrianglesAndAddToVirtualScene(&roadmodel);
+
+    ObjModel grassmodel("../../data/bunny.obj");
+    ComputeNormals(&grassmodel);
+    BuildTrianglesAndAddToVirtualScene(&grassmodel);
+
+    ObjModel roadmodel("../../data/plane.obj");
+    ComputeNormals(&roadmodel);
+    BuildTrianglesAndAddToVirtualScene(&roadmodel);
 
     if ( argc > 1 )
     {
@@ -413,13 +421,13 @@ int main(int argc, char* argv[])
         model = Matrix_Translate(0.0f, -0.5f, 0.0f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, GRASS);
-        DrawVirtualObject("grass");
+        DrawVirtualObject("the_bunny");
 
         // Desenhamos o modelo da estrada
-        // model = Matrix_Translate(0.0f, 1.0f, 0.0f);
-        // glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        // glUniform1i(g_object_id_uniform, ROAD);
-        // DrawVirtualObject("road_4");
+        model = Matrix_Translate(0.0f, 1.0f, 0.0f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, ROAD);
+        DrawVirtualObject("the_plane");
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
