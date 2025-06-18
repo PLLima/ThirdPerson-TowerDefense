@@ -303,11 +303,11 @@ int main(int argc, char* argv[])
     LoadShadersFromFiles();
 
     // Carregamos duas imagens para serem utilizadas como textura
-    LoadTextureImage("../../assets/ground/grass/grass_dif.jpeg"); // TextureImage0
+    LoadTextureImage("../../assets/ground/field/field_diff.jpg"); // TextureImage0
     LoadTextureImage("../../assets/ground/road/road.jpg"); // TextureImage1
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
-    ObjModel grassmodel("../../assets/ground/grass/grass.obj");
+    ObjModel grassmodel("../../assets/ground/field/field.obj");
     ComputeNormals(&grassmodel);
     BuildTrianglesAndAddToVirtualScene(&grassmodel);
 
@@ -442,17 +442,17 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
-        #define GRASS 0
+        #define FIELD 0
         #define ROAD  1
 
         // Desenhamos o modelo da grama
-        model = Matrix_Translate(0.0f, -0.5f, 0.0f);
+        model = Matrix_Translate(0.0f, 0.0f, -5.0f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, GRASS);
-        DrawVirtualObject("grass");
+        glUniform1i(g_object_id_uniform, FIELD);
+        DrawVirtualObject("field_2");
 
         // Desenhamos o modelo da estrada
-        model = Matrix_Rotate_X(-3.141592f/2.0f) * Matrix_Translate(0.0f, 0.0f, -3.0f);
+        model = Matrix_Rotate_X(-3.141592f/2.0f) * Matrix_Translate(0.0f, 0.0f, -10.0f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, ROAD);
         DrawVirtualObject("road_0");

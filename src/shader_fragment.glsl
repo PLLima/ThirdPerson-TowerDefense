@@ -19,7 +19,7 @@ uniform mat4 view;
 uniform mat4 projection;
 
 // Identificador que define qual objeto está sendo desenhado no momento
-#define GRASS 0
+#define FIELD 0
 #define ROAD 1
 uniform int object_id;
 
@@ -67,7 +67,7 @@ void main()
     float V = texcoords.y;
 
     vec3 Kd = vec3(0.0, 0.0, 0.0);
-    if ( object_id == GRASS )
+    if ( object_id == FIELD )
     {
         // Obtemos a refletância difusa para a grama
         Kd = texture(TextureImage0, vec2(U,V)).rgb;
