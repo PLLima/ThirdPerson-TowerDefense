@@ -66,15 +66,16 @@ void main()
     float U = texcoords.x;
     float V = texcoords.y;
 
+    vec3 Kd = vec3(0.0, 0.0, 0.0);
     if ( object_id == GRASS )
     {
         // Obtemos a refletância difusa para a grama
-        vec3 Kd = texture(TextureImage0, vec2(U,V)).rgb;
+        Kd = texture(TextureImage0, vec2(U,V)).rgb;
     }
     else if ( object_id == ROAD )
     {
         // Obtemos a refletância difusa para a estrada
-        vec3 Kd = texture(TextureImage1, vec2(U,V)).rgb;
+        Kd = texture(TextureImage1, vec2(U,V)).rgb;
     }
 
     // Equação de Iluminação

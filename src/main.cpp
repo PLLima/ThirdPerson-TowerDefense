@@ -306,9 +306,9 @@ int main(int argc, char* argv[])
     ComputeNormals(&grassmodel);
     BuildTrianglesAndAddToVirtualScene(&grassmodel);
 
-    ObjModel roadmodel("../../assets/ground/road/road.obj");
-    ComputeNormals(&roadmodel);
-    BuildTrianglesAndAddToVirtualScene(&roadmodel);
+    // ObjModel roadmodel("../../assets/ground/road/road.obj");
+    // ComputeNormals(&roadmodel);
+    // BuildTrianglesAndAddToVirtualScene(&roadmodel);
 
     if ( argc > 1 )
     {
@@ -410,14 +410,16 @@ int main(int argc, char* argv[])
         #define ROAD  1
 
         // Desenhamos o modelo da grama
+        model = Matrix_Translate(0.0f, -0.5f, 0.0f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, GRASS);
         DrawVirtualObject("grass");
 
         // Desenhamos o modelo da estrada
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, ROAD);
-        DrawVirtualObject("road_4");
+        // model = Matrix_Translate(0.0f, 1.0f, 0.0f);
+        // glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        // glUniform1i(g_object_id_uniform, ROAD);
+        // DrawVirtualObject("road_4");
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
