@@ -19,9 +19,8 @@ uniform mat4 view;
 uniform mat4 projection;
 
 // Identificador que define qual objeto está sendo desenhado no momento
-#define SPHERE 0
-#define BUNNY  1
-#define PLANE  2
+#define GRASS 0
+#define ROAD 1
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -31,7 +30,6 @@ uniform vec4 bbox_max;
 // Variáveis para acesso das imagens de textura
 uniform sampler2D TextureImage0;
 uniform sampler2D TextureImage1;
-uniform sampler2D TextureImage2;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
@@ -65,58 +63,23 @@ void main()
     vec4 v = normalize(camera_position - p);
 
     // Coordenadas de textura U e V
-    float U = 0.0;
-    float V = 0.0;
+    float U = texcoords.x;
+    float V = texcoords.y;
 
-    if ( object_id == SPHERE )
+    if ( object_id == GRASS )
     {
-        // Projeção esférica
-        vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
-
-        // Vetor projeção do ponto do objeto na esfera
-        vec4 position_model_proj = normalize(position_model - bbox_center);
-
-        // Conversão de coordenadas cartesianas para esféricas
-        float theta = atan(position_model_proj.x, position_model_proj.z);
-        float phi = asin(position_model_proj.y);
-
-        U = (theta + M_PI) / (2.0 * M_PI);
-        V = (phi + M_PI_2) / M_PI;
+        // Obtemos a refletância difusa para a grama
+        vec3 Kd = texture(TextureImage0, vec2(U,V)).rgb;
     }
-    else if ( object_id == BUNNY )
+    else if ( object_id == ROAD )
     {
-        // Projeção planar pelo plano XY
-        float minx = bbox_min.x;
-        float maxx = bbox_max.x;
-
-        float miny = bbox_min.y;
-        float maxy = bbox_max.y;
-
-        float minz = bbox_min.z;
-        float maxz = bbox_max.z;
-
-        U = (position_model.x - minx) / (maxx - minx);
-        V = (position_model.y - miny) / (maxy - miny);
+        // Obtemos a refletância difusa para a estrada
+        vec3 Kd = texture(TextureImage1, vec2(U,V)).rgb;
     }
-    else if ( object_id == PLANE )
-    {
-        // Coordenadas de textura do plano, obtidas do arquivo OBJ.
-        U = texcoords.x;
-        V = texcoords.y;
-    }
-
-    // Obtemos a refletância difusa para a parte diurna a partir da leitura da imagem TextureImage0
-    vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
-
-    // Obtemos a refletância difusa para a parte noturna a partir da leitura da imagem TextureImage1
-    vec3 Kd1 = texture(TextureImage1, vec2(U,V)).rgb;
 
     // Equação de Iluminação
     float lambert = max(0,dot(n,l));
-    float alpha = 15.0;
-    color.rgb = Kd0 * (lambert + 0.01);
-    if ( object_id == SPHERE)
-        color.rgb += Kd1 * pow(1.0 - lambert, alpha);
+    color.rgb = Kd * (lambert + 0.01);
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
