@@ -19,7 +19,7 @@ uniform mat4 view;
 uniform mat4 projection;
 
 // Identificador que define qual objeto está sendo desenhado no momento
-#define FIELD 0
+#define SAND 0
 #define ROAD 1
 uniform int object_id;
 
@@ -30,6 +30,7 @@ uniform vec4 bbox_max;
 // Variáveis para acesso das imagens de textura
 uniform sampler2D TextureImage0;
 uniform sampler2D TextureImage1;
+uniform sampler2D TextureImage2;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
@@ -67,7 +68,7 @@ void main()
     float V = texcoords.y;
 
     vec3 Kd = vec3(0.0, 0.0, 0.0);
-    if ( object_id == FIELD )
+    if ( object_id == SAND )
     {
         // Obtemos a refletância difusa para a grama
         Kd = texture(TextureImage0, vec2(U,V)).rgb;

@@ -303,17 +303,14 @@ int main(int argc, char* argv[])
     LoadShadersFromFiles();
 
     // Carregamos duas imagens para serem utilizadas como textura
-    LoadTextureImage("../../assets/ground/field/field_diff.jpg"); // TextureImage0
-    LoadTextureImage("../../assets/ground/road/road.jpg"); // TextureImage1
+    LoadTextureImage("../../assets/scenery/sand.jpeg"); // TextureImage0
+    LoadTextureImage("../../assets/scenery/road.jpeg"); // TextureImage1
+    LoadTextureImage("../../assets/scenery/hill.jpeg"); // TextureImage2
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
-    ObjModel grassmodel("../../assets/ground/field/field.obj");
-    ComputeNormals(&grassmodel);
-    BuildTrianglesAndAddToVirtualScene(&grassmodel);
-
-    ObjModel roadmodel("../../assets/ground/road/road.obj");
-    ComputeNormals(&roadmodel);
-    BuildTrianglesAndAddToVirtualScene(&roadmodel);
+    ObjModel scenerymodel("../../assets/scenery/scenery.obj");
+    ComputeNormals(&scenerymodel);
+    BuildTrianglesAndAddToVirtualScene(&scenerymodel);
 
     if ( argc > 1 )
     {
@@ -442,20 +439,18 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
-        #define FIELD 0
-        #define ROAD  1
+        #define SAND 0
+        #define ROAD 1
 
         // Desenhamos o modelo da grama
-        model = Matrix_Translate(0.0f, -10.001f, -2.0f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, FIELD);
-        DrawVirtualObject("field_2");
+        glUniform1i(g_object_id_uniform, SAND);
+        DrawVirtualObject("scenery_0");
 
         // Desenhamos o modelo da estrada
-        model = Matrix_Rotate_X(-3.141592f/2.0f) * Matrix_Translate(0.0f, 0.0f, -10.0f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, ROAD);
-        DrawVirtualObject("road_0");
+        DrawVirtualObject("scenery_1");
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
@@ -622,6 +617,7 @@ void LoadShadersFromFiles()
     glUseProgram(g_GpuProgramID);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage0"), 0);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage1"), 1);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage2"), 1);
     glUseProgram(0);
 }
 
