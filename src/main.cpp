@@ -446,7 +446,7 @@ int main(int argc, char* argv[])
         #define ROAD  1
 
         // Desenhamos o modelo da grama
-        model = Matrix_Translate(0.0f, 0.0f, -5.0f);
+        model = Matrix_Translate(0.0f, -10.001f, -2.0f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, FIELD);
         DrawVirtualObject("field_2");
