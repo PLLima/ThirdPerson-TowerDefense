@@ -194,6 +194,11 @@ bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mous
 // usuário através do mouse (veja função CursorPosCallback()). A posição
 // efetiva da câmera é calculada dentro da função main(), dentro do loop de
 // renderização.
+bool g_UseFreeCamera = false;
+bool g_WKeyPressed = false;
+bool g_AKeyPressed = false;
+bool g_SKeyPressed = false;
+bool g_DKeyPressed = false;
 float g_CameraTheta = 0.0f; // Ângulo no plano ZX em relação ao eixo Z
 float g_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
 float g_CameraDistance = 3.5f; // Distância da câmera para a origem
@@ -298,23 +303,15 @@ int main(int argc, char* argv[])
     LoadShadersFromFiles();
 
     // Carregamos duas imagens para serem utilizadas como textura
-    //LoadTextureImage("../../assets/ground/grass/grass_dif.jpeg"); // TextureImage0
-    //LoadTextureImage("../../assets/ground/road/road.jpg"); // TextureImage1
+    LoadTextureImage("../../assets/ground/grass/grass_dif.jpeg"); // TextureImage0
+    LoadTextureImage("../../assets/ground/road/road.jpg"); // TextureImage1
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
-    // ObjModel grassmodel("../../assets/ground/grass/grass.obj");
-    // ComputeNormals(&grassmodel);
-    // BuildTrianglesAndAddToVirtualScene(&grassmodel);
-
-    // ObjModel roadmodel("../../assets/ground/road/road.obj");
-    // ComputeNormals(&roadmodel);
-    // BuildTrianglesAndAddToVirtualScene(&roadmodel);
-
-    ObjModel grassmodel("../../data/bunny.obj");
+    ObjModel grassmodel("../../assets/ground/grass/grass.obj");
     ComputeNormals(&grassmodel);
     BuildTrianglesAndAddToVirtualScene(&grassmodel);
 
-    ObjModel roadmodel("../../data/plane.obj");
+    ObjModel roadmodel("../../assets/ground/road/road.obj");
     ComputeNormals(&roadmodel);
     BuildTrianglesAndAddToVirtualScene(&roadmodel);
 
@@ -336,6 +333,17 @@ int main(int argc, char* argv[])
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
+    // Iniciamos o controle da movimentação de câmera livre (por método de Euler)
+    float camera_speed = 1.0f;
+    float previous_time = (float)glfwGetTime();
+    float current_time;
+    float delta_t;
+    glm::vec4 camera_position_c  = glm::vec4(2.25f,2.25f,2.25f,1.0f); // Ponto "c", centro da câmera
+    glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
+    glm::vec4 camera_lookat_l    = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
+    glm::vec4 camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
+    glm::vec4 camera_w = -camera_view_vector;
+    glm::vec4 camera_u = crossproduct(camera_up_vector, camera_w);
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
     {
@@ -368,10 +376,31 @@ int main(int argc, char* argv[])
 
         // Abaixo definimos as varáveis que efetivamente definem a câmera virtual.
         // Veja slides 195-227 e 229-234 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-        glm::vec4 camera_position_c  = glm::vec4(x,y,z,1.0f); // Ponto "c", centro da câmera
-        glm::vec4 camera_lookat_l    = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
-        glm::vec4 camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
-        glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
+        current_time = (float)glfwGetTime();
+        delta_t = current_time - previous_time;
+        previous_time = current_time;
+        if (g_UseFreeCamera)
+        {
+            // Câmera livre
+            camera_view_vector  = glm::vec4(x,-y,z,0.0f); // Ponto "c", centro da câmera
+            camera_w = -camera_view_vector;
+            camera_u = crossproduct(camera_up_vector, camera_w);
+            if (g_WKeyPressed)
+                camera_position_c += camera_speed * delta_t * -camera_w;
+            if (g_SKeyPressed)
+                camera_position_c += camera_speed * delta_t * camera_w;
+            if (g_AKeyPressed)
+                camera_position_c += camera_speed * delta_t * -camera_u;
+            if (g_DKeyPressed)
+                camera_position_c += camera_speed * delta_t * camera_u;
+        }
+        else
+        {
+            // Câmera look-at
+            camera_position_c  = glm::vec4(x,y,z,1.0f); // Ponto "c", centro da câmera
+            camera_lookat_l    = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
+            camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
+        }
 
         // Computamos a matriz "View" utilizando os parâmetros da câmera para
         // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
@@ -421,13 +450,13 @@ int main(int argc, char* argv[])
         model = Matrix_Translate(0.0f, -0.5f, 0.0f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, GRASS);
-        DrawVirtualObject("the_bunny");
+        DrawVirtualObject("grass");
 
         // Desenhamos o modelo da estrada
         model = Matrix_Translate(0.0f, 1.0f, 0.0f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, ROAD);
-        DrawVirtualObject("the_plane");
+        DrawVirtualObject("road_0");
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
@@ -1164,6 +1193,37 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
 
     float delta = 3.141592 / 16; // 22.5 graus, em radianos.
 
+
+    // Se o usuário pressionar a tecla WASD, atualizamos as respectivas variáveis para true.
+    if (key == GLFW_KEY_W)
+    {
+        if (action == GLFW_PRESS)
+            g_WKeyPressed = true;
+        else if (action == GLFW_RELEASE)
+            g_WKeyPressed = false;
+    }
+    if (key == GLFW_KEY_A)
+    {
+        if (action == GLFW_PRESS)
+            g_AKeyPressed = true;
+        else if (action == GLFW_RELEASE)
+            g_AKeyPressed = false;
+    }
+    if (key == GLFW_KEY_S)
+    {
+        if (action == GLFW_PRESS)
+            g_SKeyPressed = true;
+        else if (action == GLFW_RELEASE)
+            g_SKeyPressed = false;
+    }
+    if (key == GLFW_KEY_D)
+    {
+        if (action == GLFW_PRESS)
+            g_DKeyPressed = true;
+        else if (action == GLFW_RELEASE)
+            g_DKeyPressed = false;
+    }
+
     if (key == GLFW_KEY_X && action == GLFW_PRESS)
     {
         g_AngleX += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
@@ -1200,6 +1260,11 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     if (key == GLFW_KEY_O && action == GLFW_PRESS)
     {
         g_UsePerspectiveProjection = false;
+    }
+
+    if (key == GLFW_KEY_C && action == GLFW_PRESS)
+    {
+        g_UseFreeCamera = !g_UseFreeCamera;
     }
 
     // Se o usuário apertar a tecla H, fazemos um "toggle" do texto informativo mostrado na tela.
