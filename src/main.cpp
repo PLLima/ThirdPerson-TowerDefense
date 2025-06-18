@@ -338,7 +338,7 @@ int main(int argc, char* argv[])
     float previous_time = (float)glfwGetTime();
     float current_time;
     float delta_t;
-    glm::vec4 camera_position_c  = glm::vec4(2.25f,2.25f,2.25f,1.0f); // Ponto "c", centro da câmera
+    glm::vec4 camera_position_c  = glm::vec4(0.0f,1.0f,0.0f,1.0f); // Ponto "c", centro da câmera
     glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
     glm::vec4 camera_lookat_l    = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
     glm::vec4 camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
@@ -382,7 +382,7 @@ int main(int argc, char* argv[])
         if (g_UseFreeCamera)
         {
             // Câmera livre
-            camera_view_vector  = glm::vec4(x,-y,z,0.0f); // Ponto "c", centro da câmera
+            camera_view_vector  = glm::vec4(x,-r-y,z,0.0f); // Ponto "c", centro da câmera
             camera_w = -camera_view_vector;
             camera_u = crossproduct(camera_up_vector, camera_w);
             if (g_WKeyPressed)
@@ -397,8 +397,7 @@ int main(int argc, char* argv[])
         else
         {
             // Câmera look-at
-            camera_position_c  = glm::vec4(x,y,z,1.0f); // Ponto "c", centro da câmera
-            camera_lookat_l    = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
+            camera_position_c  = glm::vec4(0.0f,1.0f,0.01f,1.0f); // Ponto "c", centro da câmera
             camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
         }
 
@@ -1091,7 +1090,7 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
     // parâmetros que definem a posição da câmera dentro da cena virtual.
     // Assim, temos que o usuário consegue controlar a câmera.
 
-    if (g_LeftMouseButtonPressed)
+    if (g_LeftMouseButtonPressed && g_UseFreeCamera)
     {
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
         float dx = xpos - g_LastCursorPosX;
