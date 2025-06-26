@@ -67,17 +67,19 @@ void main()
     float U = texcoords.x;
     float V = texcoords.y;
 
-    vec3 Kd = vec3(0.0, 0.0, 0.0);
-    if ( object_id == SAND )
-    {
-        // Obtemos a refletância difusa para a grama
-        Kd = texture(TextureImage0, vec2(U,V)).rgb;
-    }
-    else if ( object_id == ROAD )
-    {
-        // Obtemos a refletância difusa para a estrada
-        Kd = texture(TextureImage1, vec2(U,V)).rgb;
-    }
+    // vec3 Kd = vec3(0.0, 0.0, 0.0);
+    // if ( object_id == SAND )
+    // {
+    //     // Obtemos a refletância difusa para a grama
+    //     Kd = texture(TextureImage0, vec2(U,V)).rgb;
+    // }
+    // else if ( object_id == ROAD )
+    // {
+    //     // Obtemos a refletância difusa para a estrada
+    //     Kd = texture(TextureImage1, vec2(U,V)).rgb;
+    // }
+
+    vec3 Kd = texture(TextureImage0, vec2(U,V)).rgb;
 
     // Equação de Iluminação
     float lambert = max(0,dot(n,l));
