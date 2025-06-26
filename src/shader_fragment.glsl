@@ -19,8 +19,18 @@ uniform mat4 view;
 uniform mat4 projection;
 
 // Identificador que define qual objeto está sendo desenhado no momento
-#define SAND 0
-#define ROAD 1
+#define OBJ_0 0
+#define OBJ_1 1
+#define OBJ_2 2
+#define OBJ_3 3
+#define OBJ_4 4
+#define OBJ_5 5
+#define OBJ_6 6
+#define OBJ_7 7
+#define OBJ_8 8
+#define OBJ_9 9
+#define OBJ_10 10
+
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -31,6 +41,14 @@ uniform vec4 bbox_max;
 uniform sampler2D TextureImage0;
 uniform sampler2D TextureImage1;
 uniform sampler2D TextureImage2;
+// uniform sampler2D TextureImage3;
+// uniform sampler2D TextureImage4;
+// uniform sampler2D TextureImage5;
+// uniform sampler2D TextureImage6;
+// uniform sampler2D TextureImage7;
+// uniform sampler2D TextureImage8;
+// uniform sampler2D TextureImage9;
+// uniform sampler2D TextureImage10;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
@@ -67,19 +85,20 @@ void main()
     float U = texcoords.x;
     float V = texcoords.y;
 
-    // vec3 Kd = vec3(0.0, 0.0, 0.0);
-    // if ( object_id == SAND )
-    // {
-    //     // Obtemos a refletância difusa para a grama
-    //     Kd = texture(TextureImage0, vec2(U,V)).rgb;
-    // }
-    // else if ( object_id == ROAD )
-    // {
-    //     // Obtemos a refletância difusa para a estrada
-    //     Kd = texture(TextureImage1, vec2(U,V)).rgb;
-    // }
-
-    vec3 Kd = texture(TextureImage0, vec2(U,V)).rgb;
+    vec3 Kd = vec3(0.0, 0.0, 0.0);
+    switch (object_id) {
+        case OBJ_0: Kd = texture(TextureImage0, vec2(U,V)).rgb;
+        case OBJ_1: Kd = texture(TextureImage1, vec2(U,V)).rgb;
+        case OBJ_2: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+        case OBJ_3: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+        case OBJ_4: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+        case OBJ_5: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+        case OBJ_6: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+        case OBJ_7: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+        case OBJ_8: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+        case OBJ_9: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+        case OBJ_10: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+    }
 
     // Equação de Iluminação
     float lambert = max(0,dot(n,l));
