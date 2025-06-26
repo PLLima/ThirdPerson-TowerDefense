@@ -332,16 +332,17 @@ int main(int argc, char* argv[])
     // Habilitamos o Backface Culling. Veja slides 8-13 do documento Aula_02_Fundamentos_Matematicos.pdf, slides 23-34 do documento Aula_13_Clipping_and_Culling.pdf e slides 112-123 do documento Aula_14_Laboratorio_3_Revisao.pdf.
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
+    //glFrontFace(GL_CCW);
+    glFrontFace(GL_CW);
 
     // Iniciamos o controle da movimentação de câmera livre (por método de Euler)
     float camera_speed = 1.0f;
     float previous_time = (float)glfwGetTime();
     float current_time;
     float delta_t;
-    glm::vec4 camera_position_c = glm::vec4(14300.0f, 4600.0f, 9500.0f, 1.0f); // Ponto "c", centro da câmera
+    glm::vec4 camera_position_c = glm::vec4(14300.0f, 6000.0f, 9500.0f, 1.0f); // Ponto "c", centro da câmera
     glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
-    glm::vec4 camera_lookat_l   = glm::vec4(14300.0f, 4600.0f, 9600.0f, 1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
+    glm::vec4 camera_lookat_l   = glm::vec4(14300.0f, 3000.0f, 9600.0f, 1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
     glm::vec4 camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
     glm::vec4 camera_w = -camera_view_vector;
     glm::vec4 camera_u = crossproduct(camera_up_vector, camera_w);
@@ -398,7 +399,7 @@ int main(int argc, char* argv[])
         else
         {
             // Câmera look-at
-            camera_position_c  = glm::vec4(0.0f,10.0f,0.0f,1.0f); // Ponto "c", centro da câmera
+            //camera_position_c  = glm::vec4(0.0f,10.0f,0.0f,1.0f); // Ponto "c", centro da câmera
             camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
         }
 
@@ -411,7 +412,7 @@ int main(int argc, char* argv[])
 
         // Note que, no sistema de coordenadas da câmera, os planos near e far
         // estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
-        float nearplane = -0.1f;  // Posição do "near plane"
+        float nearplane = -10.0f;  // Posição do "near plane"
         float farplane  = -20000.0f; // Posição do "far plane"
 
         if (g_UsePerspectiveProjection)
