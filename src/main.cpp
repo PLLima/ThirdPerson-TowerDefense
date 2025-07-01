@@ -336,6 +336,14 @@ int main(int argc, char* argv[])
     //glFrontFace(GL_CCW);
     glFrontFace(GL_CW);
 
+    // Habilitamos o espelhamento de texturas
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
+    // Aprimoramos o escalamento de texturas objetos
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
     // Iniciamos o controle da movimentação de câmera livre (por método de Euler)
     float camera_speed = 250.0f;
     float previous_time = (float)glfwGetTime();

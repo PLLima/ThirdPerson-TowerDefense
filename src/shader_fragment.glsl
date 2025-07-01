@@ -41,14 +41,14 @@ uniform vec4 bbox_max;
 uniform sampler2D TextureImage0;
 uniform sampler2D TextureImage1;
 uniform sampler2D TextureImage2;
-// uniform sampler2D TextureImage3;
-// uniform sampler2D TextureImage4;
-// uniform sampler2D TextureImage5;
-// uniform sampler2D TextureImage6;
-// uniform sampler2D TextureImage7;
-// uniform sampler2D TextureImage8;
-// uniform sampler2D TextureImage9;
-// uniform sampler2D TextureImage10;
+uniform sampler2D TextureImage3;
+uniform sampler2D TextureImage4;
+uniform sampler2D TextureImage5;
+uniform sampler2D TextureImage6;
+uniform sampler2D TextureImage7;
+uniform sampler2D TextureImage8;
+uniform sampler2D TextureImage9;
+uniform sampler2D TextureImage10;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
@@ -85,20 +85,31 @@ void main()
     float U = texcoords.x;
     float V = texcoords.y;
 
+    // Implementação de GL_MIRRORED_REPEAT
+    float rounded_U = floor(U);
+    U = U - rounded_U;
+    if(int(rounded_U) % 2 == 1) // Se ímpar
+        U = 1 - U;
+    float rounded_V = floor(V);
+    V = V - rounded_V;
+    if(int(rounded_V) % 2 == 1) // Se ímpar
+        V = 1 - V;
+
     vec3 Kd = vec3(0.0, 0.0, 0.0);
-    switch (object_id) {
-        case OBJ_0: Kd = texture(TextureImage0, vec2(U,V)).rgb;
-        case OBJ_1: Kd = texture(TextureImage1, vec2(U,V)).rgb;
-        case OBJ_2: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-        case OBJ_3: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-        case OBJ_4: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-        case OBJ_5: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-        case OBJ_6: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-        case OBJ_7: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-        case OBJ_8: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-        case OBJ_9: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-        case OBJ_10: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-    }
+    // switch (object_id) {
+    //     case OBJ_0: Kd = texture(TextureImage0, vec2(U,V)).rgb;
+    //     case OBJ_1: Kd = texture(TextureImage1, vec2(U,V)).rgb;
+    //     case OBJ_2: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+    //     case OBJ_3: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+    //     case OBJ_4: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+    //     case OBJ_5: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+    //     case OBJ_6: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+    //     case OBJ_7: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+    //     case OBJ_8: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+    //     case OBJ_9: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+    //     case OBJ_10: Kd = texture(TextureImage2, vec2(U,V)).rgb;
+    // }
+    Kd = texture(TextureImage1, vec2(U,V)).rgb;
 
     // Equação de Iluminação
     float lambert = max(0,dot(n,l));
