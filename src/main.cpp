@@ -307,7 +307,8 @@ int main(int argc, char* argv[])
     // Carregamos duas imagens para serem utilizadas como textura
     LoadTextureImage("../../assets/scenery/sand.jpeg"); // TextureImage0
     LoadTextureImage("../../assets/scenery/road.jpeg"); // TextureImage1
-    LoadTextureImage("../../assets/scenery/hill.jpeg"); // TextureImage2
+    LoadTextureImage("../../assets/scenery/rock.jpeg"); // TextureImage2
+    LoadTextureImage("../../assets/scenery/grass.png"); // TextureImage3
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     ObjModel scenerymodel("../../assets/scenery/model.obj");
@@ -456,12 +457,11 @@ int main(int argc, char* argv[])
         #define OBJ_9 9 
         #define OBJ_10 10
 
-        model = Matrix_Scale(1.0f, -1.0f, 1.0f);
-
         // desenhamos os modelos para geração do cenário
+        model = Matrix_Scale(1.0f, -1.0f, 1.0f);
         for (int obj_index = 0; obj_index <= 10; obj_index++) {
             glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-            glUniform1i(g_object_id_uniform, 0);
+            glUniform1i(g_object_id_uniform, OBJ_0 + obj_index);
             std::string obj_name = "object_" + std::to_string(obj_index);
             DrawVirtualObject(obj_name.c_str());
         }
@@ -629,9 +629,8 @@ void LoadShadersFromFiles()
 
     // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
     glUseProgram(g_GpuProgramID);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage0"), OBJ_0);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage1"), OBJ_1);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage2"), OBJ_2);
+    for(int i=0; i <= 10; i++)
+        glUniform1i(glGetUniformLocation(g_GpuProgramID, ("TextureImage" + std::to_string(i)).c_str()), OBJ_0 + i);
     glUseProgram(0);
 }
 
