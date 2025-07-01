@@ -336,7 +336,7 @@ int main(int argc, char* argv[])
     glFrontFace(GL_CW);
 
     // Iniciamos o controle da movimentação de câmera livre (por método de Euler)
-    float camera_speed = 1.0f;
+    float camera_speed = 250.0f;
     float previous_time = (float)glfwGetTime();
     float current_time;
     float delta_t;
@@ -399,7 +399,7 @@ int main(int argc, char* argv[])
         else
         {
             // Câmera look-at
-            //camera_position_c  = glm::vec4(0.0f,10.0f,0.0f,1.0f); // Ponto "c", centro da câmera
+            // glm::vec4(14300.0f, 6000.0f, 9500.0f, 1.0f); // Ponto "c", centro da câmera
             camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
         }
 
