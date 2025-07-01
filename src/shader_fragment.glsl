@@ -88,32 +88,53 @@ void main()
     // Implementação de GL_MIRRORED_REPEAT
     float rounded_U = floor(U);
     U = U - rounded_U;
-    if(int(rounded_U) % 2 == 1) // Se ímpar
-        U = 1 - U;
     float rounded_V = floor(V);
     V = V - rounded_V;
+    if(int(rounded_U) % 2 == 1) // Se ímpar
+        U = 1 - U;
     if(int(rounded_V) % 2 == 1) // Se ímpar
         V = 1 - V;
 
     vec3 Kd = vec3(0.0, 0.0, 0.0);
-    // switch (object_id) {
-    //     case OBJ_0: Kd = texture(TextureImage0, vec2(U,V)).rgb;
-    //     case OBJ_1: Kd = texture(TextureImage1, vec2(U,V)).rgb;
-    //     case OBJ_2: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-    //     case OBJ_3: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-    //     case OBJ_4: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-    //     case OBJ_5: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-    //     case OBJ_6: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-    //     case OBJ_7: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-    //     case OBJ_8: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-    //     case OBJ_9: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-    //     case OBJ_10: Kd = texture(TextureImage2, vec2(U,V)).rgb;
-    // }
-    Kd = texture(TextureImage1, vec2(U,V)).rgb;
+    switch (object_id) {
+        case OBJ_0: // Sand
+            Kd = texture(TextureImage0, vec2(U,V)).rgb;
+            break;
+        case OBJ_1:
+            Kd = texture(TextureImage3, vec2(U,V)).rgb;
+            break;
+        case OBJ_2: // Rocks
+            Kd = texture(TextureImage2, vec2(U,V)).rgb;
+            break;
+        case OBJ_3:
+            Kd = texture(TextureImage3, vec2(U,V)).rgb;
+            break;
+        case OBJ_4:
+            Kd = texture(TextureImage3, vec2(U,V)).rgb;
+            break;
+        case OBJ_5:
+            Kd = texture(TextureImage3, vec2(U,V)).rgb;
+            break;
+        case OBJ_6:
+            Kd = texture(TextureImage3, vec2(U,V)).rgb;
+            break;
+        case OBJ_7:
+            Kd = texture(TextureImage3, vec2(U,V)).rgb;
+            break;
+        case OBJ_8:
+            Kd = texture(TextureImage3, vec2(U,V)).rgb;
+            break;
+        case OBJ_9:
+            Kd = texture(TextureImage3, vec2(U,V)).rgb;
+            break;
+        case OBJ_10: // Road
+            Kd = texture(TextureImage1, vec2(U,V)).rgb;
+            break;
+    }
 
     // Equação de Iluminação
     float lambert = max(0,dot(n,l));
-    color.rgb = Kd * (lambert + 0.01);
+    color.rgb = Kd * (lambert + 0.075);
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
