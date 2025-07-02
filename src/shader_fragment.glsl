@@ -86,10 +86,13 @@ void main()
     vec4 n = normalize(normal);
 
     // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
-    vec4 l = normalize(vec4(1.0,1.0,0.0,0.0));
+    vec4 l = normalize(vec4(1.0,1.0,1.0,0.0));
 
     // Vetor que define o sentido da câmera em relação ao ponto atual.
     vec4 v = normalize(camera_position - p);
+
+    // Vetor presente no termo de Blinn-Phong
+    vec4 h = normalize(v + l);
 
     // Coordenadas de textura U e V
     float U = texcoords.x;
@@ -107,6 +110,8 @@ void main()
 
     vec3 Kd = vec3(0.0, 0.0, 0.0);
     vec3 Ka = vec3(0.075, 0.075, 0.075);
+    vec3 Ks = vec3(0.0, 0.0, 0.0);
+    float q = 1.0;
     switch (object_id) {
         case OBJ_0: // Sand
             Kd = texture(TextureImage0, vec2(U,V)).rgb;
@@ -141,36 +146,45 @@ void main()
         case OBJ_10: // Road
             Kd = texture(TextureImage1, vec2(U,V)).rgb;
             break;
-        case TANK_0: // Tank
-            Ka = vec3(0.2, 0.2, 0.2);
+        case TANK_0: // Tank Barrel
+            n = -n;
             Kd = texture(TextureImage4, vec2(U,V)).rgb;
             break;
-        case TANK_1: // Tank
-            Ka = vec3(0.2, 0.2, 0.2);
+        case TANK_1: // Tank Base
+            n = -n;
             Kd = texture(TextureImage5, vec2(U,V)).rgb;
             break;
-        case TANK_2: // Tank
-            Ka = vec3(0.2, 0.2, 0.2);
+        case TANK_2: // Tank Wheels
+            n = -n;
             Kd = texture(TextureImage6, vec2(U,V)).rgb;
             break;
         case DARTLING_TOWER:
-            Ka = vec3(0.125, 0.125, 0.125);
             Kd = texture(TextureImage7, vec2(U,V)).rgb;
             break;
         case BALLON_RED:
+            n = -n;
             Kd = texture(TextureImage8, vec2(U,V)).rgb;
+            Ks = vec3(1.0, 1.0, 1.0);
+            q = 40.0;
             break;
         case BALLON_BIRTHDAY:
+            n = -n;
             Kd = texture(TextureImage9, vec2(U,V)).rgb;
+            Ks = vec3(1.0, 1.0, 1.0);
+            q = 40.0;
             break;
         case BALLON_HEART:
+            n = -n;
             Kd = texture(TextureImage10, vec2(U,V)).rgb;
+            Ks = vec3(1.0, 1.0, 1.0);
+            q = 40.0;
             break;
     }
 
     // Equação de Iluminação
     float lambert = max(0,dot(n,l));
-    color.rgb = Kd * (lambert + Ka);
+    float blinn_phong = pow(max(0,dot(n,h)), q);
+    color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
