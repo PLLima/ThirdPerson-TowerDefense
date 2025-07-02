@@ -37,6 +37,10 @@ uniform mat4 projection;
 
 #define DARTLING_TOWER 14
 
+#define BALLON_RED 15
+#define BALLON_BIRTHDAY 16
+#define BALLON_HEART 17
+
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -152,6 +156,15 @@ void main()
         case DARTLING_TOWER:
             Ka = vec3(0.125, 0.125, 0.125);
             Kd = texture(TextureImage7, vec2(U,V)).rgb;
+            break;
+        case BALLON_RED:
+            Kd = texture(TextureImage8, vec2(U,V)).rgb;
+            break;
+        case BALLON_BIRTHDAY:
+            Kd = texture(TextureImage9, vec2(U,V)).rgb;
+            break;
+        case BALLON_HEART:
+            Kd = texture(TextureImage10, vec2(U,V)).rgb;
             break;
     }
 

@@ -300,11 +300,15 @@ int main(int argc, char *argv[])
     LoadTextureImage("../../assets/scenery/rock.jpeg"); // TextureImage2
     LoadTextureImage("../../assets/scenery/grass.png"); // TextureImage3
 
-    LoadTextureImage("../../assets/towers/tank_0.jpg");           // TextureImage4
-    LoadTextureImage("../../assets/towers/tank_1.jpg");           // TextureImage5
-    LoadTextureImage("../../assets/towers/tank_2.jpg");           // TextureImage6
+    LoadTextureImage("../../assets/towers/tank_0.jpg"); // TextureImage4
+    LoadTextureImage("../../assets/towers/tank_1.jpg"); // TextureImage5
+    LoadTextureImage("../../assets/towers/tank_2.jpg"); // TextureImage6
 
     LoadTextureImage("../../assets/towers/dartling_tower.png"); // TextureImage7
+
+    LoadTextureImage("../../assets/enemies/ballon_red.jpg");      // TextureImage8
+    LoadTextureImage("../../assets/enemies/ballon_birthday.jpg"); // TextureImage9
+    LoadTextureImage("../../assets/enemies/ballon_heart.jpg");    // TextureImage10
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     ObjModel scenerymodel("../../assets/scenery/model.obj");
@@ -318,6 +322,18 @@ int main(int argc, char *argv[])
     ObjModel dartlingtowermodel("../../assets/towers/dartling_tower.obj");
     ComputeNormals(&dartlingtowermodel);
     BuildTrianglesAndAddToVirtualScene(&dartlingtowermodel);
+
+    ObjModel ballonredmodel("../../assets/enemies/ballon_red.obj");
+    ComputeNormals(&ballonredmodel);
+    BuildTrianglesAndAddToVirtualScene(&ballonredmodel);
+
+    ObjModel ballonbirthdaymodel("../../assets/enemies/ballon_birthday.obj");
+    ComputeNormals(&ballonbirthdaymodel);
+    BuildTrianglesAndAddToVirtualScene(&ballonbirthdaymodel);
+
+    ObjModel ballonheartmodel("../../assets/enemies/ballon_heart.obj");
+    ComputeNormals(&ballonheartmodel);
+    BuildTrianglesAndAddToVirtualScene(&ballonheartmodel);
 
     if (argc > 1)
     {
@@ -469,6 +485,10 @@ int main(int argc, char *argv[])
 
 #define DARTLING_TOWER 14
 
+#define BALLON_RED 15
+#define BALLON_BIRTHDAY 16
+#define BALLON_HEART 17
+
         // desenhamos os modelos para geração do cenário
         model = Matrix_Scale(1.0f, -1.0f, 1.0f);
         for (int obj_index = 0; obj_index <= 10; obj_index++)
@@ -479,9 +499,10 @@ int main(int argc, char *argv[])
             DrawVirtualObject(obj_name.c_str());
         }
 
-        model = Matrix_Translate(10000.0f, -3650.0f, 3000.0f) *
+        // desenhamos o tanque
+        model = Matrix_Translate(10000.0f, -3900.0f, 3000.0f) *
                 Matrix_Rotate_Y(-M_PI_2) *
-                Matrix_Scale(1000.0f, 1000.0f, 1000.0f);
+                Matrix_Scale(500.0f, 500.0f, 500.0f);
         for (int tank_part = 0; tank_part < 3; tank_part++)
         {
             PushMatrix(model);
@@ -510,7 +531,7 @@ int main(int argc, char *argv[])
         // desenhamos a torre
         model = Matrix_Translate(15000.0f, -4000.0f, 3000.0f) *
                 Matrix_Rotate_Y(-M_PI_2) *
-                Matrix_Scale(500.0f, 500.0f, 500.0f);
+                Matrix_Scale(325.0f, 325.0f, 325.0f);
         for (int tower_part = 1; tower_part <= 5; tower_part++)
         {
             PushMatrix(model);
@@ -544,6 +565,28 @@ int main(int argc, char *argv[])
             }
             PopMatrix(model);
         }
+
+        // desenhamos os modelos de inimigos
+        model = Matrix_Translate(13000.0f, -3700.0f, 5000.0f) *
+                Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.5f) *
+                Matrix_Scale(200.0f, 200.0f, 200.0f);
+        glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, BALLON_RED);
+        DrawVirtualObject("ballon_red");
+
+        model = Matrix_Translate(12500.0f, -3700.0f, 4000.0f) *
+                Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.5f) *
+                Matrix_Scale(200.0f, 200.0f, 200.0f);
+        glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, BALLON_BIRTHDAY);
+        DrawVirtualObject("ballon_birthday");
+
+        model = Matrix_Translate(12750.0f, -3700.0f, 3000.0f) *
+                Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.5f) *
+                Matrix_Scale(200.0f, 200.0f, 200.0f);
+        glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, BALLON_HEART);
+        DrawVirtualObject("ballon_heart");
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
