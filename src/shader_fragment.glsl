@@ -31,6 +31,8 @@ uniform mat4 projection;
 #define OBJ_9 9
 #define OBJ_10 10
 
+#define TANK 11
+
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -129,6 +131,9 @@ void main()
             break;
         case OBJ_10: // Road
             Kd = texture(TextureImage1, vec2(U,V)).rgb;
+            break;
+        case TANK: // Tank
+            Kd = texture(TextureImage4, vec2(U,V)).rgb;
             break;
     }
 

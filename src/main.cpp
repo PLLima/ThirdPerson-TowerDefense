@@ -50,6 +50,10 @@
 #include "utils.h"
 #include "matrices.h"
 
+// Constantes
+#define M_PI   3.14159265358979323846
+#define M_PI_2 1.57079632679489661923
+
 // Estrutura que representa um modelo geométrico carregado a partir de um
 // arquivo ".obj". Veja https://en.wikipedia.org/wiki/Wavefront_.obj_file .
 struct ObjModel
@@ -310,12 +314,16 @@ int main(int argc, char* argv[])
     LoadTextureImage("../../assets/scenery/rock.jpeg"); // TextureImage2
     LoadTextureImage("../../assets/scenery/grass.png"); // TextureImage3
 
+    LoadTextureImage("../../assets/towers/tank.jpg"); // TextureImage4
+
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     ObjModel scenerymodel("../../assets/scenery/model.obj");
     ComputeNormals(&scenerymodel);
     BuildTrianglesAndAddToVirtualScene(&scenerymodel);
 
-    // PrintObjModelInfo(&scenerymodel);
+    ObjModel tankmodel("../../assets/towers/tank.obj");
+    ComputeNormals(&tankmodel);
+    BuildTrianglesAndAddToVirtualScene(&tankmodel);
 
     if ( argc > 1 )
     {
@@ -341,7 +349,7 @@ int main(int argc, char* argv[])
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Iniciamos o controle da movimentação de câmera livre (por método de Euler)
-    float camera_speed = 250.0f;
+    float camera_speed = 500.0f;
     float previous_time = (float)glfwGetTime();
     float current_time;
     float delta_t;
@@ -461,6 +469,8 @@ int main(int argc, char* argv[])
         #define OBJ_9 9 
         #define OBJ_10 10
 
+        #define TANK 11
+
         // desenhamos os modelos para geração do cenário
         model = Matrix_Scale(1.0f, -1.0f, 1.0f);
         for (int obj_index = 0; obj_index <= 10; obj_index++) {
@@ -469,6 +479,14 @@ int main(int argc, char* argv[])
             std::string obj_name = "object_" + std::to_string(obj_index);
             DrawVirtualObject(obj_name.c_str());
         }
+
+        // desenhamos o tanque
+        model = Matrix_Translate(10000.0f, -3500.0f, 3000.0f) * 
+                Matrix_Rotate_Y(M_PI_2) *
+                Matrix_Scale(1000.0f, 1000.0f, 1000.0f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, TANK);
+        DrawVirtualObject("tank");
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
