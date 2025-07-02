@@ -8,6 +8,19 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+// Definimos uma estrutura que armazenará dados necessários para renderizar
+// cada objeto da cena virtual.
+struct SceneObject
+{
+    std::string name;              // Nome do objeto
+    size_t first_index;            // Índice do primeiro vértice dentro do vetor indices[] definido em BuildTrianglesAndAddToVirtualScene()
+    size_t num_indices;            // Número de índices do objeto dentro do vetor indices[] definido em BuildTrianglesAndAddToVirtualScene()
+    GLenum rendering_mode;         // Modo de rasterização (GL_TRIANGLES, GL_TRIANGLE_STRIP, etc.)
+    GLuint vertex_array_object_id; // ID do VAO onde estão armazenados os atributos do modelo
+    glm::vec3 bbox_min;            // Axis-Aligned Bounding Box do objeto
+    glm::vec3 bbox_max;
+};
+
 // Esta função Matrix() auxilia na criação de matrizes usando a biblioteca GLM.
 // Note que em OpenGL (e GLM) as matrizes são definidas como "column-major",
 // onde os elementos da matriz são armazenadas percorrendo as COLUNAS da mesma.
@@ -143,6 +156,33 @@ glm::mat4 Matrix_Rotate_Z(float angle)
         0.0f , 0.0f , 1.0f , 0.0f ,
         0.0f , 0.0f , 0.0f , 1.0f
     );
+}
+
+glm::mat4 Matrix_Rotate_X_Center(std::map<std::string, SceneObject> virtual_scene, std::string object_name, float angle)
+{
+    glm::vec3 bbox_min = virtual_scene[object_name].bbox_min;
+    glm::vec3 bbox_max = virtual_scene[object_name].bbox_max;
+
+    glm::vec3 center = (bbox_min + bbox_max) / 2.0f;
+    return Matrix_Translate(center.x, center.y, center.z) * Matrix_Rotate_X(angle) * Matrix_Translate(-center.x, -center.y, -center.z);
+}
+
+glm::mat4 Matrix_Rotate_Y_Center(std::map<std::string, SceneObject> virtual_scene, std::string object_name, float angle)
+{
+    glm::vec3 bbox_min = virtual_scene[object_name].bbox_min;
+    glm::vec3 bbox_max = virtual_scene[object_name].bbox_max;
+
+    glm::vec3 center = (bbox_min + bbox_max) / 2.0f;
+    return Matrix_Translate(center.x, center.y, center.z) * Matrix_Rotate_Y(angle) * Matrix_Translate(-center.x, -center.y, -center.z);
+}
+
+glm::mat4 Matrix_Rotate_Z_Center(std::map<std::string, SceneObject> virtual_scene, std::string object_name, float angle)
+{
+    glm::vec3 bbox_min = virtual_scene[object_name].bbox_min;
+    glm::vec3 bbox_max = virtual_scene[object_name].bbox_max;
+
+    glm::vec3 center = (bbox_min + bbox_max) / 2.0f;
+    return Matrix_Translate(center.x, center.y, center.z) * Matrix_Rotate_Z(angle) * Matrix_Translate(-center.x, -center.y, -center.z);
 }
 
 // Função que calcula a norma Euclidiana de um vetor cujos coeficientes são
