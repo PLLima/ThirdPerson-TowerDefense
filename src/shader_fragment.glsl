@@ -31,8 +31,11 @@ uniform mat4 projection;
 #define OBJ_9 9
 #define OBJ_10 10
 
-#define TANK 11
-#define DARTLING_TOWER 12
+#define TANK_0 11
+#define TANK_1 12
+#define TANK_2 13
+
+#define DARTLING_TOWER 14
 
 uniform int object_id;
 
@@ -134,13 +137,21 @@ void main()
         case OBJ_10: // Road
             Kd = texture(TextureImage1, vec2(U,V)).rgb;
             break;
-        case TANK: // Tank
+        case TANK_0: // Tank
             Ka = vec3(0.2, 0.2, 0.2);
             Kd = texture(TextureImage4, vec2(U,V)).rgb;
             break;
+        case TANK_1: // Tank
+            Ka = vec3(0.2, 0.2, 0.2);
+            Kd = texture(TextureImage5, vec2(U,V)).rgb;
+            break;
+        case TANK_2: // Tank
+            Ka = vec3(0.2, 0.2, 0.2);
+            Kd = texture(TextureImage6, vec2(U,V)).rgb;
+            break;
         case DARTLING_TOWER:
             Ka = vec3(0.125, 0.125, 0.125);
-            Kd = texture(TextureImage5, vec2(U,V)).rgb;
+            Kd = texture(TextureImage7, vec2(U,V)).rgb;
             break;
     }
 

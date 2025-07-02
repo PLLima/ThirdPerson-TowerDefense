@@ -360,6 +360,17 @@ glm::mat4 Matrix_Perspective(float field_of_view, float aspect, float n, float f
     return -M*P;
 }
 
+// Função para rotacionar o canhão de um tanque
+glm::mat4 Matrix_Rotate_Tank_Barrel(std::map<std::string, SceneObject> virtual_scene, std::string object_name, float angle)
+{
+    glm::vec3 bbox_min = virtual_scene[object_name].bbox_min;
+    glm::vec3 bbox_max = virtual_scene[object_name].bbox_max;
+
+    glm::vec3 center = (bbox_min + bbox_max) / 2.0f;
+    center.z += 0.5325f;
+    return Matrix_Translate(center.x, center.y, center.z) * Matrix_Rotate_Y(angle) * Matrix_Translate(-center.x, -center.y, -center.z);
+}
+
 // Função que imprime uma matriz M no terminal
 void PrintMatrix(glm::mat4 M)
 {

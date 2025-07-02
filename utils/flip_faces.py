@@ -20,4 +20,4 @@ def flip_obj_faces(input_obj_path, output_obj_path):
         f_out.writelines(flipped_lines)
 
 # Usage:
-flip_obj_faces('./assets/towers/ha.obj', './assets/towers/dartling_tower_flipped.obj')
+flip_obj_faces('./assets/towers/tank.obj', './assets/towers/tank_flipped.obj')

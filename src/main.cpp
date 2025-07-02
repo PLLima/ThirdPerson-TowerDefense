@@ -300,8 +300,11 @@ int main(int argc, char *argv[])
     LoadTextureImage("../../assets/scenery/rock.jpeg"); // TextureImage2
     LoadTextureImage("../../assets/scenery/grass.png"); // TextureImage3
 
-    LoadTextureImage("../../assets/towers/tank.jpg");           // TextureImage4
-    LoadTextureImage("../../assets/towers/dartling_tower.png"); // TextureImage5
+    LoadTextureImage("../../assets/towers/tank_0.jpg");           // TextureImage4
+    LoadTextureImage("../../assets/towers/tank_1.jpg");           // TextureImage5
+    LoadTextureImage("../../assets/towers/tank_2.jpg");           // TextureImage6
+
+    LoadTextureImage("../../assets/towers/dartling_tower.png"); // TextureImage7
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     ObjModel scenerymodel("../../assets/scenery/model.obj");
@@ -460,8 +463,11 @@ int main(int argc, char *argv[])
 #define OBJ_9 9
 #define OBJ_10 10
 
-#define TANK 11
-#define DARTLING_TOWER 12
+#define TANK_0 11
+#define TANK_1 12
+#define TANK_2 13
+
+#define DARTLING_TOWER 14
 
         // desenhamos os modelos para geração do cenário
         model = Matrix_Scale(1.0f, -1.0f, 1.0f);
@@ -473,15 +479,36 @@ int main(int argc, char *argv[])
             DrawVirtualObject(obj_name.c_str());
         }
 
-        // desenhamos o tanque
-        model = Matrix_Translate(10000.0f, -3500.0f, 3000.0f) *
-                Matrix_Rotate_Y(M_PI_2) *
+        model = Matrix_Translate(10000.0f, -3650.0f, 3000.0f) *
+                Matrix_Rotate_Y(-M_PI_2) *
                 Matrix_Scale(1000.0f, 1000.0f, 1000.0f);
-        glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, TANK);
-        DrawVirtualObject("tank");
+        for (int tank_part = 0; tank_part < 3; tank_part++)
+        {
+            PushMatrix(model);
+            switch (tank_part)
+            {
+            case 0:
+                model = model * Matrix_Rotate_Tank_Barrel(g_VirtualScene, "tank_0", g_AngleX + (float)glfwGetTime() * 0.5f);
+                glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+                glUniform1i(g_object_id_uniform, TANK_0);
+                DrawVirtualObject("tank_0");
+                break;
+            case 1:
+                glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+                glUniform1i(g_object_id_uniform, TANK_1);
+                DrawVirtualObject("tank_1");
+                break;
+            case 2:
+                glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+                glUniform1i(g_object_id_uniform, TANK_2);
+                DrawVirtualObject("tank_2");
+                break;
+            }
+            PopMatrix(model);
+        }
 
-        model = Matrix_Translate(15000.0f, -3500.0f, 3000.0f) *
+        // desenhamos a torre
+        model = Matrix_Translate(15000.0f, -4000.0f, 3000.0f) *
                 Matrix_Rotate_Y(-M_PI_2) *
                 Matrix_Scale(500.0f, 500.0f, 500.0f);
         for (int tower_part = 1; tower_part <= 5; tower_part++)
