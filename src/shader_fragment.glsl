@@ -98,6 +98,7 @@ void main()
         V = 1 - V;
 
     vec3 Kd = vec3(0.0, 0.0, 0.0);
+    vec3 Ka = vec3(0.075, 0.075, 0.075);
     switch (object_id) {
         case OBJ_0: // Sand
             Kd = texture(TextureImage0, vec2(U,V)).rgb;
@@ -133,13 +134,14 @@ void main()
             Kd = texture(TextureImage1, vec2(U,V)).rgb;
             break;
         case TANK: // Tank
+            Ka = vec3(0.2, 0.2, 0.2);
             Kd = texture(TextureImage4, vec2(U,V)).rgb;
             break;
     }
 
     // Equação de Iluminação
     float lambert = max(0,dot(n,l));
-    color.rgb = Kd * (lambert + 0.075);
+    color.rgb = Kd * (lambert + Ka);
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
