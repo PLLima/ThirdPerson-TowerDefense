@@ -32,6 +32,7 @@ uniform mat4 projection;
 #define OBJ_10 10
 
 #define TANK 11
+#define DARTLING_TOWER 12
 
 uniform int object_id;
 
@@ -136,6 +137,10 @@ void main()
         case TANK: // Tank
             Ka = vec3(0.2, 0.2, 0.2);
             Kd = texture(TextureImage4, vec2(U,V)).rgb;
+            break;
+        case DARTLING_TOWER:
+            Ka = vec3(0.125, 0.125, 0.125);
+            Kd = texture(TextureImage5, vec2(U,V)).rgb;
             break;
     }
 
