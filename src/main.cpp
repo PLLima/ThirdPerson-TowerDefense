@@ -336,10 +336,6 @@ int main(int argc, char* argv[])
     //glFrontFace(GL_CCW);
     glFrontFace(GL_CW);
 
-    // Habilitamos o espelhamento de texturas
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-
     // Aprimoramos o escalamento de texturas objetos
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -861,8 +857,6 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), NULL, GL_STATIC_DRAW);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(GLuint), indices.data());
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // XXX Errado!
-    //
 
     // "Desligamos" o VAO, evitando assim que operações posteriores venham a
     // alterar o mesmo. Isso evita bugs.
@@ -1447,97 +1441,97 @@ void PrintObjModelInfo(ObjModel* model)
   printf("# of shapes    : %d\n", (int)shapes.size());
   printf("# of materials : %d\n", (int)materials.size());
 
-//   for (size_t v = 0; v < attrib.vertices.size() / 3; v++) {
-//     printf("  v[%ld] = (%f, %f, %f)\n", static_cast<long>(v),
-//            static_cast<const double>(attrib.vertices[3 * v + 0]),
-//            static_cast<const double>(attrib.vertices[3 * v + 1]),
-//            static_cast<const double>(attrib.vertices[3 * v + 2]));
-//   }
+  for (size_t v = 0; v < attrib.vertices.size() / 3; v++) {
+    printf("  v[%ld] = (%f, %f, %f)\n", static_cast<long>(v),
+           static_cast<const double>(attrib.vertices[3 * v + 0]),
+           static_cast<const double>(attrib.vertices[3 * v + 1]),
+           static_cast<const double>(attrib.vertices[3 * v + 2]));
+  }
 
-//   for (size_t v = 0; v < attrib.normals.size() / 3; v++) {
-//     printf("  n[%ld] = (%f, %f, %f)\n", static_cast<long>(v),
-//            static_cast<const double>(attrib.normals[3 * v + 0]),
-//            static_cast<const double>(attrib.normals[3 * v + 1]),
-//            static_cast<const double>(attrib.normals[3 * v + 2]));
-//   }
+  for (size_t v = 0; v < attrib.normals.size() / 3; v++) {
+    printf("  n[%ld] = (%f, %f, %f)\n", static_cast<long>(v),
+           static_cast<const double>(attrib.normals[3 * v + 0]),
+           static_cast<const double>(attrib.normals[3 * v + 1]),
+           static_cast<const double>(attrib.normals[3 * v + 2]));
+  }
 
-//   for (size_t v = 0; v < attrib.texcoords.size() / 2; v++) {
-//     printf("  uv[%ld] = (%f, %f)\n", static_cast<long>(v),
-//            static_cast<const double>(attrib.texcoords[2 * v + 0]),
-//            static_cast<const double>(attrib.texcoords[2 * v + 1]));
-//   }
+  for (size_t v = 0; v < attrib.texcoords.size() / 2; v++) {
+    printf("  uv[%ld] = (%f, %f)\n", static_cast<long>(v),
+           static_cast<const double>(attrib.texcoords[2 * v + 0]),
+           static_cast<const double>(attrib.texcoords[2 * v + 1]));
+  }
 
-//   // For each shape
-//   for (size_t i = 0; i < shapes.size(); i++) {
-//     printf("shape[%ld].name = %s\n", static_cast<long>(i),
-//            shapes[i].name.c_str());
-//     printf("Size of shape[%ld].indices: %lu\n", static_cast<long>(i),
-//            static_cast<unsigned long>(shapes[i].mesh.indices.size()));
+  // For each shape
+  for (size_t i = 0; i < shapes.size(); i++) {
+    printf("shape[%ld].name = %s\n", static_cast<long>(i),
+           shapes[i].name.c_str());
+    printf("Size of shape[%ld].indices: %lu\n", static_cast<long>(i),
+           static_cast<unsigned long>(shapes[i].mesh.indices.size()));
 
-//     size_t index_offset = 0;
+    size_t index_offset = 0;
 
-//     assert(shapes[i].mesh.num_face_vertices.size() ==
-//            shapes[i].mesh.material_ids.size());
+    assert(shapes[i].mesh.num_face_vertices.size() ==
+           shapes[i].mesh.material_ids.size());
 
-//     printf("shape[%ld].num_faces: %lu\n", static_cast<long>(i),
-//            static_cast<unsigned long>(shapes[i].mesh.num_face_vertices.size()));
+    printf("shape[%ld].num_faces: %lu\n", static_cast<long>(i),
+           static_cast<unsigned long>(shapes[i].mesh.num_face_vertices.size()));
 
-//     // For each face
-//     for (size_t f = 0; f < shapes[i].mesh.num_face_vertices.size(); f++) {
-//       size_t fnum = shapes[i].mesh.num_face_vertices[f];
+    // For each face
+    for (size_t f = 0; f < shapes[i].mesh.num_face_vertices.size(); f++) {
+      size_t fnum = shapes[i].mesh.num_face_vertices[f];
 
-//       printf("  face[%ld].fnum = %ld\n", static_cast<long>(f),
-//              static_cast<unsigned long>(fnum));
+      printf("  face[%ld].fnum = %ld\n", static_cast<long>(f),
+             static_cast<unsigned long>(fnum));
 
-//       // For each vertex in the face
-//       for (size_t v = 0; v < fnum; v++) {
-//         tinyobj::index_t idx = shapes[i].mesh.indices[index_offset + v];
-//         printf("    face[%ld].v[%ld].idx = %d/%d/%d\n", static_cast<long>(f),
-//                static_cast<long>(v), idx.vertex_index, idx.normal_index,
-//                idx.texcoord_index);
-//       }
+      // For each vertex in the face
+      for (size_t v = 0; v < fnum; v++) {
+        tinyobj::index_t idx = shapes[i].mesh.indices[index_offset + v];
+        printf("    face[%ld].v[%ld].idx = %d/%d/%d\n", static_cast<long>(f),
+               static_cast<long>(v), idx.vertex_index, idx.normal_index,
+               idx.texcoord_index);
+      }
 
-//       printf("  face[%ld].material_id = %d\n", static_cast<long>(f),
-//              shapes[i].mesh.material_ids[f]);
+      printf("  face[%ld].material_id = %d\n", static_cast<long>(f),
+             shapes[i].mesh.material_ids[f]);
 
-//       index_offset += fnum;
-//     }
+      index_offset += fnum;
+    }
 
-//     printf("shape[%ld].num_tags: %lu\n", static_cast<long>(i),
-//            static_cast<unsigned long>(shapes[i].mesh.tags.size()));
-//     for (size_t t = 0; t < shapes[i].mesh.tags.size(); t++) {
-//       printf("  tag[%ld] = %s ", static_cast<long>(t),
-//              shapes[i].mesh.tags[t].name.c_str());
-//       printf(" ints: [");
-//       for (size_t j = 0; j < shapes[i].mesh.tags[t].intValues.size(); ++j) {
-//         printf("%ld", static_cast<long>(shapes[i].mesh.tags[t].intValues[j]));
-//         if (j < (shapes[i].mesh.tags[t].intValues.size() - 1)) {
-//           printf(", ");
-//         }
-//       }
-//       printf("]");
+    printf("shape[%ld].num_tags: %lu\n", static_cast<long>(i),
+           static_cast<unsigned long>(shapes[i].mesh.tags.size()));
+    for (size_t t = 0; t < shapes[i].mesh.tags.size(); t++) {
+      printf("  tag[%ld] = %s ", static_cast<long>(t),
+             shapes[i].mesh.tags[t].name.c_str());
+      printf(" ints: [");
+      for (size_t j = 0; j < shapes[i].mesh.tags[t].intValues.size(); ++j) {
+        printf("%ld", static_cast<long>(shapes[i].mesh.tags[t].intValues[j]));
+        if (j < (shapes[i].mesh.tags[t].intValues.size() - 1)) {
+          printf(", ");
+        }
+      }
+      printf("]");
 
-//       printf(" floats: [");
-//       for (size_t j = 0; j < shapes[i].mesh.tags[t].floatValues.size(); ++j) {
-//         printf("%f", static_cast<const double>(
-//                          shapes[i].mesh.tags[t].floatValues[j]));
-//         if (j < (shapes[i].mesh.tags[t].floatValues.size() - 1)) {
-//           printf(", ");
-//         }
-//       }
-//       printf("]");
+      printf(" floats: [");
+      for (size_t j = 0; j < shapes[i].mesh.tags[t].floatValues.size(); ++j) {
+        printf("%f", static_cast<const double>(
+                         shapes[i].mesh.tags[t].floatValues[j]));
+        if (j < (shapes[i].mesh.tags[t].floatValues.size() - 1)) {
+          printf(", ");
+        }
+      }
+      printf("]");
 
-//       printf(" strings: [");
-//       for (size_t j = 0; j < shapes[i].mesh.tags[t].stringValues.size(); ++j) {
-//         printf("%s", shapes[i].mesh.tags[t].stringValues[j].c_str());
-//         if (j < (shapes[i].mesh.tags[t].stringValues.size() - 1)) {
-//           printf(", ");
-//         }
-//       }
-//       printf("]");
-//       printf("\n");
-//     }
-//   }
+      printf(" strings: [");
+      for (size_t j = 0; j < shapes[i].mesh.tags[t].stringValues.size(); ++j) {
+        printf("%s", shapes[i].mesh.tags[t].stringValues[j].c_str());
+        if (j < (shapes[i].mesh.tags[t].stringValues.size() - 1)) {
+          printf(", ");
+        }
+      }
+      printf("]");
+      printf("\n");
+    }
+  }
 
   for (size_t i = 0; i < materials.size(); i++) {
     printf("material[%ld].name = %s\n", static_cast<long>(i),
