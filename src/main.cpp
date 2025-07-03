@@ -176,6 +176,16 @@ float g_AngleX = 0.0f;
 float g_AngleY = 0.0f;
 float g_AngleZ = 0.0f;
 
+float g_TankRotationAngle = 0.0f; // Ângulo de rotação do tanque
+float g_TankBarrelRotation = 0.0f;
+glm::vec3 g_TankPosition = glm::vec3(10000.0f, -3900.0f, 3000.0f); // Posição global do tanque
+bool g_UpKeyPressed = false;
+bool g_DownKeyPressed = false;
+bool g_LeftKeyPressed = false;
+bool g_RightKeyPressed = false;
+bool g_CtrlRightKeyPressed = false; // Ctrl + Right
+bool g_CtrlLeftKeyPressed = false; // Ctrl + Left
+
 // "g_LeftMouseButtonPressed = true" se o usuário está com o botão esquerdo do mouse
 // pressionado no momento atual. Veja função MouseButtonCallback().
 bool g_LeftMouseButtonPressed = false;
@@ -467,27 +477,27 @@ int main(int argc, char *argv[])
         glUniformMatrix4fv(g_view_uniform, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(g_projection_uniform, 1, GL_FALSE, glm::value_ptr(projection));
 
-#define OBJ_0 0
-#define OBJ_1 1
-#define OBJ_2 2
-#define OBJ_3 3
-#define OBJ_4 4
-#define OBJ_5 5
-#define OBJ_6 6
-#define OBJ_7 7
-#define OBJ_8 8
-#define OBJ_9 9
-#define OBJ_10 10
+        #define OBJ_0 0
+        #define OBJ_1 1
+        #define OBJ_2 2
+        #define OBJ_3 3
+        #define OBJ_4 4
+        #define OBJ_5 5
+        #define OBJ_6 6
+        #define OBJ_7 7
+        #define OBJ_8 8
+        #define OBJ_9 9
+        #define OBJ_10 10
 
-#define TANK_0 11
-#define TANK_1 12
-#define TANK_2 13
+        #define TANK_0 11
+        #define TANK_1 12
+        #define TANK_2 13
 
-#define DARTLING_TOWER 14
+        #define DARTLING_TOWER 14
 
-#define BALLON_RED 15
-#define BALLON_BIRTHDAY 16
-#define BALLON_HEART 17
+        #define BALLON_RED 15
+        #define BALLON_BIRTHDAY 16
+        #define BALLON_HEART 17
 
         // desenhamos os modelos para geração do cenário
         model = Matrix_Scale(1.0f, -1.0f, 1.0f);
@@ -499,9 +509,44 @@ int main(int argc, char *argv[])
             DrawVirtualObject(obj_name.c_str());
         }
 
+        float tank_speed = 900.0f;
+        float tank_rotation_speed = M_PI / 3;
+        glm::vec3 tank_direction = glm::vec3(-sin(g_TankRotationAngle), 0.0f, -cos(g_TankRotationAngle));
+        
+        if (g_UpKeyPressed) {
+            g_TankPosition += tank_direction * tank_speed * delta_t;
+            if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+                g_TankRotationAngle += tank_rotation_speed * delta_t;
+            }
+            else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+                g_TankRotationAngle -= tank_rotation_speed * delta_t;
+            }
+        }
+        else if (g_DownKeyPressed) {
+            g_TankPosition -= tank_direction * tank_speed * delta_t;
+            if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+                g_TankRotationAngle += tank_rotation_speed * delta_t;
+            }
+            else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+                g_TankRotationAngle -= tank_rotation_speed * delta_t;
+            }
+        }
+        else if (g_RightKeyPressed && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) != GLFW_PRESS) {
+            g_TankRotationAngle -= tank_rotation_speed * delta_t;
+        }
+        else if (g_RightKeyPressed && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+            g_TankBarrelRotation -= tank_rotation_speed * delta_t;
+        }
+        else if (g_LeftKeyPressed && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) != GLFW_PRESS) {
+            g_TankRotationAngle += tank_rotation_speed * delta_t;
+        }
+        else if (g_LeftKeyPressed && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+            g_TankBarrelRotation += tank_rotation_speed * delta_t;
+        }
+
         // desenhamos o tanque
-        model = Matrix_Translate(10000.0f, -3900.0f, 3000.0f) *
-                Matrix_Rotate_Y(-M_PI_2) *
+        model = Matrix_Translate(g_TankPosition.x, g_TankPosition.y, g_TankPosition.z) *
+                Matrix_Rotate_Y(g_TankRotationAngle) *
                 Matrix_Scale(500.0f, 500.0f, 500.0f);
         for (int tank_part = 0; tank_part < 3; tank_part++)
         {
@@ -509,7 +554,7 @@ int main(int argc, char *argv[])
             switch (tank_part)
             {
             case 0:
-                model = model * Matrix_Rotate_Tank_Barrel(g_VirtualScene, "tank_0", g_AngleX + (float)glfwGetTime() * 0.5f);
+                model = model * Matrix_Rotate_Tank_Barrel(g_VirtualScene, "tank_0", g_TankBarrelRotation);
                 glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
                 glUniform1i(g_object_id_uniform, TANK_0);
                 DrawVirtualObject("tank_0");
@@ -1323,7 +1368,7 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mod)
 
     float delta = 3.141592 / 16; // 22.5 graus, em radianos.
 
-    // Se o usuário pressionar a tecla WASD, atualizamos as respectivas variáveis para true.
+    // Se o usuário pressionar a tecla WASD ou Up, Down, Left, Right, atualizamos as respectivas variáveis para true.
     if (key == GLFW_KEY_W)
     {
         if (action == GLFW_PRESS)
@@ -1351,6 +1396,34 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mod)
             g_DKeyPressed = true;
         else if (action == GLFW_RELEASE)
             g_DKeyPressed = false;
+    }
+    if (key == GLFW_KEY_UP)
+    {
+        if (action == GLFW_PRESS)
+            g_UpKeyPressed = true;
+        else if (action == GLFW_RELEASE)
+            g_UpKeyPressed = false;
+    }
+    if (key == GLFW_KEY_DOWN)
+    {
+        if (action == GLFW_PRESS)
+            g_DownKeyPressed = true;
+        else if (action == GLFW_RELEASE)
+            g_DownKeyPressed = false;
+    }
+    if (key == GLFW_KEY_LEFT)
+    {
+        if (action == GLFW_PRESS)
+            g_LeftKeyPressed = true;
+        else if (action == GLFW_RELEASE)
+            g_LeftKeyPressed = false;
+    }
+    if (key == GLFW_KEY_RIGHT)
+    {
+        if (action == GLFW_PRESS)
+            g_RightKeyPressed = true;
+        else if (action == GLFW_RELEASE)
+            g_RightKeyPressed = false;
     }
 
     if (key == GLFW_KEY_X && action == GLFW_PRESS)
