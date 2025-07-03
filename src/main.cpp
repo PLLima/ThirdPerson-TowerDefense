@@ -183,8 +183,6 @@ bool g_UpKeyPressed = false;
 bool g_DownKeyPressed = false;
 bool g_LeftKeyPressed = false;
 bool g_RightKeyPressed = false;
-bool g_CtrlRightKeyPressed = false; // Ctrl + Right
-bool g_CtrlLeftKeyPressed = false; // Ctrl + Left
 
 // "g_LeftMouseButtonPressed = true" se o usuário está com o botão esquerdo do mouse
 // pressionado no momento atual. Veja função MouseButtonCallback().
