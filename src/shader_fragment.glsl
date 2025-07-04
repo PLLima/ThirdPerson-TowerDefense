@@ -36,6 +36,15 @@ uniform mat4 projection;
 #define BALLON_BIRTHDAY 16
 #define BALLON_HEART 17
 
+#define ROAD_0 18
+#define ROAD_1 19 // parte de cima da rua
+#define ROAD_2 20
+#define ROAD_3 21
+#define ROAD_4 22
+#define ROAD_5 23 // parte de cima da rua
+#define ROAD_6 24
+#define ROAD_7 25   
+
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -128,7 +137,13 @@ void main()
             break;
         case FACE_5: // Grass
             Kd = texture(TextureImage5, vec2(U,V)).rgb;
-            break;                                            
+            break;
+        case ROAD_1: // ROAD
+            Kd = texture(TextureImage13, vec2(U,V)).rgb;
+            break;    
+        case ROAD_5: // ROAD
+            Kd = texture(TextureImage13, vec2(U,V)).rgb;
+            break;                                                                        
         case TANK_0: // Tank Barrel
             n = -n;
             Kd = texture(TextureImage6, vec2(U,V)).rgb;

@@ -323,6 +323,8 @@ int main(int argc, char *argv[])
     LoadTextureImage("../../assets/enemies/ballon_birthday.jpg"); // TextureImage11
     LoadTextureImage("../../assets/enemies/ballon_heart.jpg");    // TextureImage12
 
+    LoadTextureImage("../../assets/scenery/road.jpeg");    // TextureImage13
+
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     ObjModel scenerymodel("../../assets/scenery/model.obj");
     ComputeNormals(&scenerymodel);
@@ -492,15 +494,6 @@ int main(int argc, char *argv[])
         #define FACE_4 4
         #define FACE_5 5
 
-        #define ROAD_0 6
-        #define ROAD_1 7 // parte de cima da rua
-        #define ROAD_2 8
-        #define ROAD_3 9
-        #define ROAD_4 10
-        #define ROAD_5 11 // parte de cima da rua
-        #define ROAD_6 12
-        #define ROAD_7 13
-
         #define TANK_0 11
         #define TANK_1 12
         #define TANK_2 13
@@ -510,6 +503,15 @@ int main(int argc, char *argv[])
         #define BALLON_RED 15
         #define BALLON_BIRTHDAY 16
         #define BALLON_HEART 17
+
+        #define ROAD_0 18
+        #define ROAD_1 19 // parte de cima da rua
+        #define ROAD_2 20
+        #define ROAD_3 21
+        #define ROAD_4 22
+        #define ROAD_5 23 // parte de cima da rua
+        #define ROAD_6 24
+        #define ROAD_7 25        
 
         // desenhamos os modelos para geração do cenário (cubo)
         for (int obj_index = 0; obj_index <= 5; obj_index++)
@@ -524,7 +526,7 @@ int main(int argc, char *argv[])
         for (int obj_index = 0; obj_index <= 7; obj_index++)
         {
             glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-            glUniform1i(g_object_id_uniform, obj_index);
+            glUniform1i(g_object_id_uniform, ROAD_0 + obj_index);
             std::string obj_name = "road_" + std::to_string(obj_index);
             DrawVirtualObject(obj_name.c_str());
         }
@@ -815,7 +817,7 @@ void LoadShadersFromFiles()
 
     // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
     glUseProgram(g_GpuProgramID);
-    for (int i = 0; i <= 12; i++)
+    for (int i = 0; i <= 13; i++)
         glUniform1i(glGetUniformLocation(g_GpuProgramID, ("TextureImage" + std::to_string(i)).c_str()), FACE_0 + i);
     glUseProgram(0);
 }
