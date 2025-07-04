@@ -180,7 +180,7 @@ float g_AngleZ = 0.0f;
 
 float g_TankRotationAngle = 0.0f; // Ângulo de rotação do tanque
 float g_TankBarrelRotation = 0.0f;
-glm::vec3 g_TankPosition = glm::vec3(10000.0f, -4630.0f, 3000.0f); // Posição global do tanque
+glm::vec3 g_TankPosition = glm::vec3(10000.0f, -4620.0f, 3000.0f); // Posição global do tanque
 bool g_UpKeyPressed = false;
 bool g_DownKeyPressed = false;
 bool g_LeftKeyPressed = false;
@@ -519,7 +519,7 @@ int main(int argc, char *argv[])
         float tank_speed = 900.0f;
         float tank_rotation_speed = M_PI / 3;
         glm::vec3 tank_direction = glm::vec3(-sin(g_TankRotationAngle), 0.0f, -cos(g_TankRotationAngle));
-        
+
         if (g_UpKeyPressed) {
             g_TankPosition += tank_direction * tank_speed * delta_t;
             if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
@@ -581,7 +581,7 @@ int main(int argc, char *argv[])
         }
 
         // desenhamos a torre
-        model = Matrix_Translate(15000.0f, -4800.0f, 3000.0f) *
+        model = Matrix_Translate(15000.0f, -4850.0f, 3000.0f) *
                 Matrix_Rotate_Y(-M_PI_2) *
                 Matrix_Scale(325.0f, 325.0f, 325.0f);
         for (int tower_part = 1; tower_part <= 5; tower_part++)
@@ -619,21 +619,21 @@ int main(int argc, char *argv[])
         }
 
         // desenhamos os modelos de inimigos
-        model = Matrix_Translate(13000.0f, -4600.0f, 5000.0f) *
+        model = Matrix_Translate(13000.0f, -4550.0f, 5000.0f) *
                 Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.5f) *
                 Matrix_Scale(200.0f, 200.0f, 200.0f);
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BALLON_RED);
         DrawVirtualObject("ballon_red");
 
-        model = Matrix_Translate(12500.0f, -4600.0f, 4000.0f) *
+        model = Matrix_Translate(12500.0f, -4550.0f, 4000.0f) *
                 Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.5f) *
                 Matrix_Scale(200.0f, 200.0f, 200.0f);
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BALLON_BIRTHDAY);
         DrawVirtualObject("ballon_birthday");
 
-        model = Matrix_Translate(12750.0f, -4600.0f, 3000.0f) *
+        model = Matrix_Translate(12750.0f, -4550.0f, 3000.0f) *
                 Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.5f) *
                 Matrix_Scale(200.0f, 200.0f, 200.0f);
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
