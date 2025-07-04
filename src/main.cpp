@@ -308,22 +308,19 @@ int main(int argc, char *argv[])
     LoadShadersFromFiles();
 
     // Carregamos duas imagens para serem utilizadas como textura
-    LoadTextureImage("../../assets/scenery/grass.jpg"); // TextureImage0
-    LoadTextureImage("../../assets/scenery/grass.jpg"); // TextureImage1
-    LoadTextureImage("../../assets/enemies/ballon_red.jpg"); // TextureImage2
-    LoadTextureImage("../../assets/scenery/grass.jpg"); // TextureImage3
-    LoadTextureImage("../../assets/enemies/ballon_red.jpg"); // TextureImage4
-    LoadTextureImage("../../assets/scenery/grass.jpg"); // TextureImage5
+    LoadTextureImage("../../assets/scenery/grass_diff.jpg"); // TextureImage0
+    LoadTextureImage("../../assets/scenery/grass_spec.jpg"); // TextureImage1
+    LoadTextureImage("../../assets/scenery/asphalt.jpg"); // TextureImage2
 
-    LoadTextureImage("../../assets/towers/tank_0.jpg"); // TextureImage6
-    LoadTextureImage("../../assets/towers/tank_1.jpg"); // TextureImage7
-    LoadTextureImage("../../assets/towers/tank_2.jpg"); // TextureImage8
+    LoadTextureImage("../../assets/towers/tank_0.jpg"); // TextureImage3
+    LoadTextureImage("../../assets/towers/tank_1.jpg"); // TextureImage4
+    LoadTextureImage("../../assets/towers/tank_2.jpg"); // TextureImage5
 
-    LoadTextureImage("../../assets/towers/dartling_tower.png"); // TextureImage9
+    LoadTextureImage("../../assets/towers/dartling_tower.png"); // TextureImage6
 
-    LoadTextureImage("../../assets/enemies/ballon_red.jpg");      // TextureImage10
-    LoadTextureImage("../../assets/enemies/ballon_birthday.jpg"); // TextureImage11
-    LoadTextureImage("../../assets/enemies/ballon_heart.jpg");    // TextureImage12
+    LoadTextureImage("../../assets/enemies/ballon_red.jpg");      // TextureImage7
+    LoadTextureImage("../../assets/enemies/ballon_birthday.jpg"); // TextureImage8
+    LoadTextureImage("../../assets/enemies/ballon_heart.jpg");    // TextureImage9
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     ObjModel scenerymodel("../../assets/scenery/model.obj");
@@ -366,7 +363,7 @@ int main(int argc, char *argv[])
     // Habilitamos o Backface Culling. Veja slides 8-13 do documento Aula_02_Fundamentos_Matematicos.pdf, slides 23-34 do documento Aula_13_Clipping_and_Culling.pdf e slides 112-123 do documento Aula_14_Laboratorio_3_Revisao.pdf.
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
-    glFrontFace(GL_CW);
+    glFrontFace(GL_CCW);
 
     // Aprimoramos o escalamento de texturas objetos
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -493,25 +490,17 @@ int main(int argc, char *argv[])
         #define FACE_3 3
         #define FACE_4 4
         #define FACE_5 5
+        #define ROAD   6
 
-        #define TANK_0 11
-        #define TANK_1 12
-        #define TANK_2 13
+        #define TANK_0 7
+        #define TANK_1 8
+        #define TANK_2 9
 
-        #define DARTLING_TOWER 14
+        #define DARTLING_TOWER 10
 
-        #define BALLON_RED 15
-        #define BALLON_BIRTHDAY 16
-        #define BALLON_HEART 17
-
-        #define ROAD_0 18
-        #define ROAD_1 19 // parte de cima da rua
-        #define ROAD_2 20
-        #define ROAD_3 21
-        #define ROAD_4 22
-        #define ROAD_5 23 // parte de cima da rua
-        #define ROAD_6 24
-        #define ROAD_7 25        
+        #define BALLON_RED 11
+        #define BALLON_BIRTHDAY 12
+        #define BALLON_HEART 13
 
         // desenhamos os modelos para geração do cenário (cubo)
         for (int obj_index = 0; obj_index <= 5; obj_index++)
@@ -520,16 +509,12 @@ int main(int argc, char *argv[])
             glUniform1i(g_object_id_uniform, FACE_0 + obj_index);
             std::string obj_name = "face_" + std::to_string(obj_index);
             DrawVirtualObject(obj_name.c_str());
-        }        
-
-        // desenhamos os modelos para geração das ruas
-        for (int obj_index = 0; obj_index <= 7; obj_index++)
-        {
-            glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-            glUniform1i(g_object_id_uniform, ROAD_0 + obj_index);
-            std::string obj_name = "road_" + std::to_string(obj_index);
-            DrawVirtualObject(obj_name.c_str());
         }
+
+        // desenhamos a rua
+        glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, ROAD);
+        DrawVirtualObject("road");
 
         float tank_speed = 900.0f;
         float tank_rotation_speed = M_PI / 3;

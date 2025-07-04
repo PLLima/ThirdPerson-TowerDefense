@@ -19,31 +19,23 @@ uniform mat4 view;
 uniform mat4 projection;
 
 // Identificador que define qual objeto está sendo desenhado no momento
-#define FACE_0 0
-#define FACE_1 1
+#define FACE_0 0 // base
+#define FACE_1 1 // topo
 #define FACE_2 2
 #define FACE_3 3
 #define FACE_4 4
 #define FACE_5 5
+#define ROAD   6
 
-#define TANK_0 11
-#define TANK_1 12
-#define TANK_2 13
+#define TANK_0 7
+#define TANK_1 8
+#define TANK_2 9
 
-#define DARTLING_TOWER 14
+#define DARTLING_TOWER 10
 
-#define BALLON_RED 15
-#define BALLON_BIRTHDAY 16
-#define BALLON_HEART 17
-
-#define ROAD_0 18
-#define ROAD_1 19 // parte de cima da rua
-#define ROAD_2 20
-#define ROAD_3 21
-#define ROAD_4 22
-#define ROAD_5 23 // parte de cima da rua
-#define ROAD_6 24
-#define ROAD_7 25   
+#define BALLON_RED 11
+#define BALLON_BIRTHDAY 12
+#define BALLON_HEART 13
 
 uniform int object_id;
 
@@ -122,58 +114,61 @@ void main()
     switch (object_id) {
         case FACE_0: // Grass
             Kd = texture(TextureImage0, vec2(U,V)).rgb;
+            Ks = texture(TextureImage1, vec2(U,V)).rgb;
+            q = 60.0;
             break;
         case FACE_1: // Grass
-            Kd = texture(TextureImage1, vec2(U,V)).rgb;
+            Kd = texture(TextureImage0, vec2(U,V)).rgb;
+            Ks = texture(TextureImage1, vec2(U,V)).rgb;
+            q = 60.0;
             break;
         case FACE_2: // Baloon
-            Kd = texture(TextureImage2, vec2(U,V)).rgb;
+            Kd = texture(TextureImage0, vec2(U,V)).rgb;
+            Ks = texture(TextureImage1, vec2(U,V)).rgb;
+            q = 60.0;
             break;
         case FACE_3: // Grass
-            Kd = texture(TextureImage3, vec2(U,V)).rgb;
+            Kd = texture(TextureImage0, vec2(U,V)).rgb;
+            Ks = texture(TextureImage1, vec2(U,V)).rgb;
+            q = 60.0;
             break;
         case FACE_4: // Baloon
-            Kd = texture(TextureImage4, vec2(U,V)).rgb;
+            Kd = texture(TextureImage0, vec2(U,V)).rgb;
+            Ks = texture(TextureImage1, vec2(U,V)).rgb;
+            q = 60.0;
             break;
         case FACE_5: // Grass
-            Kd = texture(TextureImage5, vec2(U,V)).rgb;
+            Kd = texture(TextureImage0, vec2(U,V)).rgb;
+            Ks = texture(TextureImage1, vec2(U,V)).rgb;
+            q = 60.0;
             break;
-        case ROAD_1: // ROAD
-            Kd = texture(TextureImage13, vec2(U,V)).rgb;
-            break;    
-        case ROAD_5: // ROAD
-            Kd = texture(TextureImage13, vec2(U,V)).rgb;
-            break;                                                                        
+        case ROAD:
+            Kd = texture(TextureImage2, vec2(U,V)).rgb;
+            break;
         case TANK_0: // Tank Barrel
-            n = -n;
-            Kd = texture(TextureImage6, vec2(U,V)).rgb;
+            Kd = texture(TextureImage3, vec2(U,V)).rgb;
             break;
         case TANK_1: // Tank Base
-            n = -n;
-            Kd = texture(TextureImage7, vec2(U,V)).rgb;
+            Kd = texture(TextureImage4, vec2(U,V)).rgb;
             break;
         case TANK_2: // Tank Wheels
-            n = -n;
-            Kd = texture(TextureImage8, vec2(U,V)).rgb;
+            Kd = texture(TextureImage5, vec2(U,V)).rgb;
             break;
         case DARTLING_TOWER:
-            Kd = texture(TextureImage9, vec2(U,V)).rgb;
+            Kd = texture(TextureImage6, vec2(U,V)).rgb;
             break;
         case BALLON_RED:
-            n = -n;
-            Kd = texture(TextureImage10, vec2(U,V)).rgb;
+            Kd = texture(TextureImage7, vec2(U,V)).rgb;
             Ks = vec3(1.0, 1.0, 1.0);
             q = 40.0;
             break;
         case BALLON_BIRTHDAY:
-            n = -n;
-            Kd = texture(TextureImage11, vec2(U,V)).rgb;
+            Kd = texture(TextureImage8, vec2(U,V)).rgb;
             Ks = vec3(1.0, 1.0, 1.0);
             q = 40.0;
             break;
         case BALLON_HEART:
-            n = -n;
-            Kd = texture(TextureImage12, vec2(U,V)).rgb;
+            Kd = texture(TextureImage9, vec2(U,V)).rgb;
             Ks = vec3(1.0, 1.0, 1.0);
             q = 40.0;
             break;

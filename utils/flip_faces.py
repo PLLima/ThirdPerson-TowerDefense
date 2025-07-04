@@ -20,4 +20,4 @@ def flip_obj_faces(input_obj_path, output_obj_path):
         f_out.writelines(flipped_lines)
 
 # Usage:
-flip_obj_faces('./assets/enemies/ballon_heart.obj', './assets/enemies/ballon_heart.obj')
+flip_obj_faces('./assets/scenery/model.obj', './assets/scenery/model.obj')
