@@ -19,17 +19,12 @@ uniform mat4 view;
 uniform mat4 projection;
 
 // Identificador que define qual objeto está sendo desenhado no momento
-#define OBJ_0 0
-#define OBJ_1 1
-#define OBJ_2 2
-#define OBJ_3 3
-#define OBJ_4 4
-#define OBJ_5 5
-#define OBJ_6 6
-#define OBJ_7 7
-#define OBJ_8 8
-#define OBJ_9 9
-#define OBJ_10 10
+#define FACE_0 0
+#define FACE_1 1
+#define FACE_2 2
+#define FACE_3 3
+#define FACE_4 4
+#define FACE_5 5
 
 #define TANK_0 11
 #define TANK_1 12
@@ -59,6 +54,9 @@ uniform sampler2D TextureImage7;
 uniform sampler2D TextureImage8;
 uniform sampler2D TextureImage9;
 uniform sampler2D TextureImage10;
+uniform sampler2D TextureImage11;
+uniform sampler2D TextureImage12;
+uniform sampler2D TextureImage13;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
@@ -113,69 +111,54 @@ void main()
     vec3 Ks = vec3(0.0, 0.0, 0.0);
     float q = 1.0;
     switch (object_id) {
-        case OBJ_0: // Sand
+        case FACE_0: // Grass
             Kd = texture(TextureImage0, vec2(U,V)).rgb;
             break;
-        case OBJ_1:
-            Kd = texture(TextureImage3, vec2(U,V)).rgb;
-            break;
-        case OBJ_2: // Rocks
-            Kd = texture(TextureImage2, vec2(U,V)).rgb;
-            break;
-        case OBJ_3:
-            Kd = texture(TextureImage3, vec2(U,V)).rgb;
-            break;
-        case OBJ_4:
-            Kd = texture(TextureImage3, vec2(U,V)).rgb;
-            break;
-        case OBJ_5:
-            Kd = texture(TextureImage3, vec2(U,V)).rgb;
-            break;
-        case OBJ_6:
-            Kd = texture(TextureImage3, vec2(U,V)).rgb;
-            break;
-        case OBJ_7:
-            Kd = texture(TextureImage3, vec2(U,V)).rgb;
-            break;
-        case OBJ_8:
-            Kd = texture(TextureImage3, vec2(U,V)).rgb;
-            break;
-        case OBJ_9:
-            Kd = texture(TextureImage3, vec2(U,V)).rgb;
-            break;
-        case OBJ_10: // Road
+        case FACE_1: // Grass
             Kd = texture(TextureImage1, vec2(U,V)).rgb;
             break;
-        case TANK_0: // Tank Barrel
-            n = -n;
+        case FACE_2: // Baloon
+            Kd = texture(TextureImage2, vec2(U,V)).rgb;
+            break;
+        case FACE_3: // Grass
+            Kd = texture(TextureImage3, vec2(U,V)).rgb;
+            break;
+        case FACE_4: // Baloon
             Kd = texture(TextureImage4, vec2(U,V)).rgb;
             break;
-        case TANK_1: // Tank Base
-            n = -n;
+        case FACE_5: // Grass
             Kd = texture(TextureImage5, vec2(U,V)).rgb;
-            break;
-        case TANK_2: // Tank Wheels
+            break;                                            
+        case TANK_0: // Tank Barrel
             n = -n;
             Kd = texture(TextureImage6, vec2(U,V)).rgb;
             break;
-        case DARTLING_TOWER:
+        case TANK_1: // Tank Base
+            n = -n;
             Kd = texture(TextureImage7, vec2(U,V)).rgb;
+            break;
+        case TANK_2: // Tank Wheels
+            n = -n;
+            Kd = texture(TextureImage8, vec2(U,V)).rgb;
+            break;
+        case DARTLING_TOWER:
+            Kd = texture(TextureImage9, vec2(U,V)).rgb;
             break;
         case BALLON_RED:
             n = -n;
-            Kd = texture(TextureImage8, vec2(U,V)).rgb;
+            Kd = texture(TextureImage10, vec2(U,V)).rgb;
             Ks = vec3(1.0, 1.0, 1.0);
             q = 40.0;
             break;
         case BALLON_BIRTHDAY:
             n = -n;
-            Kd = texture(TextureImage9, vec2(U,V)).rgb;
+            Kd = texture(TextureImage11, vec2(U,V)).rgb;
             Ks = vec3(1.0, 1.0, 1.0);
             q = 40.0;
             break;
         case BALLON_HEART:
             n = -n;
-            Kd = texture(TextureImage10, vec2(U,V)).rgb;
+            Kd = texture(TextureImage12, vec2(U,V)).rgb;
             Ks = vec3(1.0, 1.0, 1.0);
             q = 40.0;
             break;

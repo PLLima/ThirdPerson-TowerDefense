@@ -178,7 +178,7 @@ float g_AngleZ = 0.0f;
 
 float g_TankRotationAngle = 0.0f; // Ângulo de rotação do tanque
 float g_TankBarrelRotation = 0.0f;
-glm::vec3 g_TankPosition = glm::vec3(10000.0f, -3900.0f, 3000.0f); // Posição global do tanque
+glm::vec3 g_TankPosition = glm::vec3(10000.0f, -4630.0f, 3000.0f); // Posição global do tanque
 bool g_UpKeyPressed = false;
 bool g_DownKeyPressed = false;
 bool g_LeftKeyPressed = false;
@@ -202,6 +202,9 @@ bool g_DKeyPressed = false;
 float g_CameraTheta = 0.0f;    // Ângulo no plano ZX em relação ao eixo Z
 float g_CameraPhi = 0.0f;      // Ângulo em relação ao eixo Y
 float g_CameraDistance = 3.5f; // Distância da câmera para a origem
+
+// Variável que controla o uso da câmera em 3a pessoa no tanque
+bool g_UseThirdPersonTankCamera = false;
 
 // Variáveis que controlam rotação do antebraço
 float g_ForearmAngleZ = 0.0f;
@@ -303,20 +306,22 @@ int main(int argc, char *argv[])
     LoadShadersFromFiles();
 
     // Carregamos duas imagens para serem utilizadas como textura
-    LoadTextureImage("../../assets/scenery/sand.jpeg"); // TextureImage0
-    LoadTextureImage("../../assets/scenery/road.jpeg"); // TextureImage1
-    LoadTextureImage("../../assets/scenery/rock.jpeg"); // TextureImage2
-    LoadTextureImage("../../assets/scenery/grass.png"); // TextureImage3
+    LoadTextureImage("../../assets/scenery/grass.jpg"); // TextureImage0
+    LoadTextureImage("../../assets/scenery/grass.jpg"); // TextureImage1
+    LoadTextureImage("../../assets/enemies/ballon_red.jpg"); // TextureImage2
+    LoadTextureImage("../../assets/scenery/grass.jpg"); // TextureImage3
+    LoadTextureImage("../../assets/enemies/ballon_red.jpg"); // TextureImage4
+    LoadTextureImage("../../assets/scenery/grass.jpg"); // TextureImage5
 
-    LoadTextureImage("../../assets/towers/tank_0.jpg"); // TextureImage4
-    LoadTextureImage("../../assets/towers/tank_1.jpg"); // TextureImage5
-    LoadTextureImage("../../assets/towers/tank_2.jpg"); // TextureImage6
+    LoadTextureImage("../../assets/towers/tank_0.jpg"); // TextureImage6
+    LoadTextureImage("../../assets/towers/tank_1.jpg"); // TextureImage7
+    LoadTextureImage("../../assets/towers/tank_2.jpg"); // TextureImage8
 
-    LoadTextureImage("../../assets/towers/dartling_tower.png"); // TextureImage7
+    LoadTextureImage("../../assets/towers/dartling_tower.png"); // TextureImage9
 
-    LoadTextureImage("../../assets/enemies/ballon_red.jpg");      // TextureImage8
-    LoadTextureImage("../../assets/enemies/ballon_birthday.jpg"); // TextureImage9
-    LoadTextureImage("../../assets/enemies/ballon_heart.jpg");    // TextureImage10
+    LoadTextureImage("../../assets/enemies/ballon_red.jpg");      // TextureImage10
+    LoadTextureImage("../../assets/enemies/ballon_birthday.jpg"); // TextureImage11
+    LoadTextureImage("../../assets/enemies/ballon_heart.jpg");    // TextureImage12
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     ObjModel scenerymodel("../../assets/scenery/model.obj");
@@ -359,7 +364,6 @@ int main(int argc, char *argv[])
     // Habilitamos o Backface Culling. Veja slides 8-13 do documento Aula_02_Fundamentos_Matematicos.pdf, slides 23-34 do documento Aula_13_Clipping_and_Culling.pdf e slides 112-123 do documento Aula_14_Laboratorio_3_Revisao.pdf.
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
-    // glFrontFace(GL_CCW);
     glFrontFace(GL_CW);
 
     // Aprimoramos o escalamento de texturas objetos
@@ -427,7 +431,13 @@ int main(int argc, char *argv[])
             if (g_DKeyPressed)
                 camera_position_c += camera_speed * delta_t * camera_u;
         }
-        else
+        else if (g_UseThirdPersonTankCamera) {
+            // Câmera third-person
+            
+
+
+        }
+        else // Opção default: câmera look-at
         {
             // Câmera look-at
             // glm::vec4(14300.0f, 6000.0f, 9500.0f, 1.0f); // Ponto "c", centro da câmera
@@ -475,17 +485,21 @@ int main(int argc, char *argv[])
         glUniformMatrix4fv(g_view_uniform, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(g_projection_uniform, 1, GL_FALSE, glm::value_ptr(projection));
 
-        #define OBJ_0 0
-        #define OBJ_1 1
-        #define OBJ_2 2
-        #define OBJ_3 3
-        #define OBJ_4 4
-        #define OBJ_5 5
-        #define OBJ_6 6
-        #define OBJ_7 7
-        #define OBJ_8 8
-        #define OBJ_9 9
-        #define OBJ_10 10
+        #define FACE_0 0 // base
+        #define FACE_1 1 // topo
+        #define FACE_2 2
+        #define FACE_3 3
+        #define FACE_4 4
+        #define FACE_5 5
+
+        #define ROAD_0 6
+        #define ROAD_1 7 // parte de cima da rua
+        #define ROAD_2 8
+        #define ROAD_3 9
+        #define ROAD_4 10
+        #define ROAD_5 11 // parte de cima da rua
+        #define ROAD_6 12
+        #define ROAD_7 13
 
         #define TANK_0 11
         #define TANK_1 12
@@ -497,13 +511,21 @@ int main(int argc, char *argv[])
         #define BALLON_BIRTHDAY 16
         #define BALLON_HEART 17
 
-        // desenhamos os modelos para geração do cenário
-        model = Matrix_Scale(1.0f, -1.0f, 1.0f);
-        for (int obj_index = 0; obj_index <= 10; obj_index++)
+        // desenhamos os modelos para geração do cenário (cubo)
+        for (int obj_index = 0; obj_index <= 5; obj_index++)
         {
             glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-            glUniform1i(g_object_id_uniform, OBJ_0 + obj_index);
-            std::string obj_name = "object_" + std::to_string(obj_index);
+            glUniform1i(g_object_id_uniform, FACE_0 + obj_index);
+            std::string obj_name = "face_" + std::to_string(obj_index);
+            DrawVirtualObject(obj_name.c_str());
+        }        
+
+        // desenhamos os modelos para geração das ruas
+        for (int obj_index = 0; obj_index <= 7; obj_index++)
+        {
+            glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+            glUniform1i(g_object_id_uniform, obj_index);
+            std::string obj_name = "road_" + std::to_string(obj_index);
             DrawVirtualObject(obj_name.c_str());
         }
 
@@ -572,7 +594,7 @@ int main(int argc, char *argv[])
         }
 
         // desenhamos a torre
-        model = Matrix_Translate(15000.0f, -4000.0f, 3000.0f) *
+        model = Matrix_Translate(15000.0f, -4800.0f, 3000.0f) *
                 Matrix_Rotate_Y(-M_PI_2) *
                 Matrix_Scale(325.0f, 325.0f, 325.0f);
         for (int tower_part = 1; tower_part <= 5; tower_part++)
@@ -610,21 +632,21 @@ int main(int argc, char *argv[])
         }
 
         // desenhamos os modelos de inimigos
-        model = Matrix_Translate(13000.0f, -3700.0f, 5000.0f) *
+        model = Matrix_Translate(13000.0f, -4600.0f, 5000.0f) *
                 Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.5f) *
                 Matrix_Scale(200.0f, 200.0f, 200.0f);
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BALLON_RED);
         DrawVirtualObject("ballon_red");
 
-        model = Matrix_Translate(12500.0f, -3700.0f, 4000.0f) *
+        model = Matrix_Translate(12500.0f, -4600.0f, 4000.0f) *
                 Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.5f) *
                 Matrix_Scale(200.0f, 200.0f, 200.0f);
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BALLON_BIRTHDAY);
         DrawVirtualObject("ballon_birthday");
 
-        model = Matrix_Translate(12750.0f, -3700.0f, 3000.0f) *
+        model = Matrix_Translate(12750.0f, -4600.0f, 3000.0f) *
                 Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.5f) *
                 Matrix_Scale(200.0f, 200.0f, 200.0f);
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
@@ -793,8 +815,8 @@ void LoadShadersFromFiles()
 
     // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
     glUseProgram(g_GpuProgramID);
-    for (int i = 0; i <= 10; i++)
-        glUniform1i(glGetUniformLocation(g_GpuProgramID, ("TextureImage" + std::to_string(i)).c_str()), OBJ_0 + i);
+    for (int i = 0; i <= 12; i++)
+        glUniform1i(glGetUniformLocation(g_GpuProgramID, ("TextureImage" + std::to_string(i)).c_str()), FACE_0 + i);
     glUseProgram(0);
 }
 
@@ -1465,6 +1487,11 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mod)
     if (key == GLFW_KEY_C && action == GLFW_PRESS)
     {
         g_UseFreeCamera = !g_UseFreeCamera;
+    }
+
+    if (key == GLFW_KEY_V && action == GLFW_PRESS) {
+        g_UseFreeCamera = false;
+        g_UseThirdPersonTankCamera = !g_UseThirdPersonTankCamera;
     }
 
     // Se o usuário apertar a tecla H, fazemos um "toggle" do texto informativo mostrado na tela.
