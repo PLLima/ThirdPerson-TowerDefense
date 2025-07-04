@@ -54,6 +54,8 @@
 #define M_PI 3.14159265358979323846
 #define M_PI_2 1.57079632679489661923
 
+#define TEXTURE_AMOUNT 14
+
 // Estrutura que representa um modelo geométrico carregado a partir de um
 // arquivo ".obj". Veja https://en.wikipedia.org/wiki/Wavefront_.obj_file .
 struct ObjModel
@@ -322,8 +324,6 @@ int main(int argc, char *argv[])
     LoadTextureImage("../../assets/enemies/ballon_red.jpg");      // TextureImage10
     LoadTextureImage("../../assets/enemies/ballon_birthday.jpg"); // TextureImage11
     LoadTextureImage("../../assets/enemies/ballon_heart.jpg");    // TextureImage12
-
-    LoadTextureImage("../../assets/scenery/road.jpeg");    // TextureImage13
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     ObjModel scenerymodel("../../assets/scenery/model.obj");
@@ -817,7 +817,7 @@ void LoadShadersFromFiles()
 
     // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
     glUseProgram(g_GpuProgramID);
-    for (int i = 0; i <= 13; i++)
+    for (int i = 0; i < TEXTURE_AMOUNT; i++)
         glUniform1i(glGetUniformLocation(g_GpuProgramID, ("TextureImage" + std::to_string(i)).c_str()), FACE_0 + i);
     glUseProgram(0);
 }
