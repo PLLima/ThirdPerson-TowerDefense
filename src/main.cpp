@@ -180,7 +180,7 @@ float g_AngleZ = 0.0f;
 
 float g_TankRotationAngle = 0.0f; // Ângulo de rotação do tanque
 float g_TankBarrelRotation = 0.0f;
-glm::vec3 g_TankPosition = glm::vec3(10000.0f, -4620.0f, 3000.0f); // Posição global do tanque
+glm::vec4 g_TankPosition = glm::vec4(10000.0f, -4620.0f, 3000.0f, 1.0f); // Posição global do tanque
 bool g_UpKeyPressed = false;
 bool g_DownKeyPressed = false;
 bool g_LeftKeyPressed = false;
@@ -432,9 +432,14 @@ int main(int argc, char *argv[])
         }
         else if (g_UseThirdPersonTankCamera) {
             // Câmera third-person
-            
-
-
+            camera_position_c = glm::vec4(
+                g_TankPosition.x + sin(g_TankRotationAngle) * 1800.0,
+                g_TankPosition.y + 2200.0,
+                g_TankPosition.z + cos(g_TankRotationAngle) * 1800.0,
+                1.0f
+            );
+            camera_lookat_l = g_TankPosition;
+            camera_view_vector = camera_lookat_l - camera_position_c;
         }
         else // Opção default: câmera look-at
         {
@@ -516,10 +521,13 @@ int main(int argc, char *argv[])
         glUniform1i(g_object_id_uniform, ROAD);
         DrawVirtualObject("road");
 
+        // variáveis de controle do tanque
         float tank_speed = 900.0f;
         float tank_rotation_speed = M_PI / 3;
-        glm::vec3 tank_direction = glm::vec3(-sin(g_TankRotationAngle), 0.0f, -cos(g_TankRotationAngle));
+        // direção de movimento do tanque
+        glm::vec4 tank_direction = glm::vec4(-sin(g_TankRotationAngle), 0.0f, -cos(g_TankRotationAngle), 0.0f);
 
+        // movimenta do tanque
         if (g_UpKeyPressed) {
             g_TankPosition += tank_direction * tank_speed * delta_t;
             if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
