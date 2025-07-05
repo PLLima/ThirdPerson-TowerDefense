@@ -197,6 +197,7 @@ bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mous
 // efetiva da câmera é calculada dentro da função main(), dentro do loop de
 // renderização.
 bool g_UseFreeCamera = false;
+bool g_UseFixedTopDownCamera = true;
 bool g_WKeyPressed = false;
 bool g_AKeyPressed = false;
 bool g_SKeyPressed = false;
@@ -374,9 +375,9 @@ int main(int argc, char *argv[])
     float previous_time = (float)glfwGetTime();
     float current_time;
     float delta_t;
-    glm::vec4 camera_position_c = glm::vec4(14300.0f, 6000.0f, 9500.0f, 1.0f); // Ponto "c", centro da câmera
+    glm::vec4 camera_position_c = glm::vec4(10000.0f, 6200.0f, 2999.0f, 1.0f); // Ponto "c", centro da câmera
     glm::vec4 camera_up_vector = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);            // Vetor "up" fixado para apontar para o "céu" (eito Y global)
-    glm::vec4 camera_lookat_l = glm::vec4(14300.0f, 3000.0f, 9600.0f, 1.0f);   // Ponto "l", para onde a câmera (look-at) estará sempre olhando
+    glm::vec4 camera_lookat_l = glm::vec4(10000.0f, -4900.0f, 3000.0f, 1.0f);   // Ponto "l", para onde a câmera (look-at) estará sempre olhando
     glm::vec4 camera_view_vector = camera_lookat_l - camera_position_c;        // Vetor "view", sentido para onde a câmera está virada
     glm::vec4 camera_w = -camera_view_vector;
     glm::vec4 camera_u = crossproduct(camera_up_vector, camera_w);
@@ -441,11 +442,10 @@ int main(int argc, char *argv[])
             camera_lookat_l = g_TankPosition;
             camera_view_vector = camera_lookat_l - camera_position_c;
         }
-        else // Opção default: câmera look-at
-        {
-            // Câmera look-at
-            // glm::vec4(14300.0f, 6000.0f, 9500.0f, 1.0f); // Ponto "c", centro da câmera
-            camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
+        else if (g_UseFixedTopDownCamera) {
+            camera_position_c = glm::vec4(10000.0f, 6200.0f, 2999.0f, 1.0f); // Ponto "c", centro da câmera
+            camera_lookat_l = glm::vec4(10000.0f, -4900.0f, 3000.0f, 1.0f);   // Ponto "l", para onde a câmera (look-at) estará sempre olhando
+            camera_view_vector = camera_lookat_l - camera_position_c; 
         }
 
         // Computamos a matriz "View" utilizando os parâmetros da câmera para
@@ -1481,13 +1481,22 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mod)
 
     if (key == GLFW_KEY_C && action == GLFW_PRESS)
     {
-        g_UseFreeCamera = !g_UseFreeCamera;
+        g_UseThirdPersonTankCamera = false;
+        g_UseFixedTopDownCamera = false;
+        g_UseFreeCamera = true;
     }
 
     if (key == GLFW_KEY_V && action == GLFW_PRESS) {
         g_UseFreeCamera = false;
-        g_UseThirdPersonTankCamera = !g_UseThirdPersonTankCamera;
+        g_UseFixedTopDownCamera = false;
+        g_UseThirdPersonTankCamera = true;
     }
+
+    if (key == GLFW_KEY_B && action == GLFW_PRESS) {
+        g_UseFreeCamera = false;
+        g_UseThirdPersonTankCamera = false;
+        g_UseFixedTopDownCamera = true;
+    }    
 
     // Se o usuário apertar a tecla H, fazemos um "toggle" do texto informativo mostrado na tela.
     if (key == GLFW_KEY_H && action == GLFW_PRESS)
