@@ -608,21 +608,21 @@ int main(int argc, char *argv[])
         // definimos a bbox do tanque depois da transformação pela matriz model
         std::vector<glm::vec3> tank_world_bbox = compute_world_bbox(model, tank_model_bbox);
 
-        bool wall_0_intersects = intercepts_plane(tank_world_bbox, wall_0_plane); // parede direita
-        bool wall_1_intersects = intercepts_plane(tank_world_bbox, wall_1_plane); // parede esquerda
-        bool wall_2_intersects = intercepts_plane(tank_world_bbox, wall_2_plane); // parede superior
-        bool wall_3_intersects = intercepts_plane(tank_world_bbox, wall_3_plane); // parede inferior
+        bool wall_0_intersects_tank = intercepts_plane(tank_world_bbox, wall_0_plane); // parede direita
+        bool wall_1_intersects_tank = intercepts_plane(tank_world_bbox, wall_1_plane); // parede esquerda
+        bool wall_2_intersects_tank = intercepts_plane(tank_world_bbox, wall_2_plane); // parede superior
+        bool wall_3_intersects_tank = intercepts_plane(tank_world_bbox, wall_3_plane); // parede inferior
 
-        if (wall_0_intersects) {
+        if (wall_0_intersects_tank) {
             g_TankPosition.x += push_back_distance;
         }
-        if (wall_1_intersects) {
+        if (wall_1_intersects_tank) {
             g_TankPosition.x -= push_back_distance;
         }
-        if (wall_2_intersects) {
+        if (wall_2_intersects_tank) {
             g_TankPosition.z -= push_back_distance;
         }
-        if (wall_3_intersects) {
+        if (wall_3_intersects_tank) {
             g_TankPosition.z += push_back_distance;
         }
 
