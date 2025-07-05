@@ -49,6 +49,7 @@
 // Headers locais, definidos na pasta "include/"
 #include "utils.h"
 #include "matrices.h"
+#include "bezier.h"
 
 // Constantes
 #define M_PI 3.14159265358979323846
@@ -375,6 +376,16 @@ int main(int argc, char *argv[])
     float previous_time = (float)glfwGetTime();
     float current_time;
     float delta_t;
+    glm::vec4 bezier_p1 = glm::vec4(3850.0f, -4550.0f, 3600.0f, 1.0f);
+    glm::vec4 bezier_p2 = glm::vec4(5900.0f, -4550.0f, 2300.0f, 1.0f);
+    glm::vec4 bezier_p3 = glm::vec4(7950.0f, -4550.0f, 2300.0f, 1.0f);
+    glm::vec4 bezier_p4 = glm::vec4(10000.0f, -4550.0f, 3050.0f, 1.0f);
+    float ballon_red_time = 0.0f;
+    float ballon_birthday_time = 0.0f;
+    float ballon_heart_time = 0.0f;
+    float ballon_red_speed = 0.125f;
+    float ballon_birthday_speed = 0.06125f;
+    float ballon_heart_speed = 0.25f;
     glm::vec4 camera_position_c = glm::vec4(10000.0f, 6200.0f, 2999.0f, 1.0f); // Ponto "c", centro da câmera
     glm::vec4 camera_up_vector = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);            // Vetor "up" fixado para apontar para o "céu" (eito Y global)
     glm::vec4 camera_lookat_l = glm::vec4(10000.0f, -4900.0f, 3000.0f, 1.0f);   // Ponto "l", para onde a câmera (look-at) estará sempre olhando
@@ -627,22 +638,34 @@ int main(int argc, char *argv[])
         }
 
         // desenhamos os modelos de inimigos
-        model = Matrix_Translate(13000.0f, -4550.0f, 5000.0f) *
-                Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.5f) *
+        ballon_red_time += delta_t;
+        if (ballon_red_time > 2.0f / ballon_red_speed)
+            ballon_red_time = 0.0f;
+        
+        ballon_birthday_time += delta_t;
+        if (ballon_birthday_time > 2.0f / ballon_birthday_speed)
+            ballon_birthday_time = 0.0f;
+        
+        ballon_heart_time += delta_t;
+        if (ballon_heart_time > 2.0f / ballon_heart_speed)
+            ballon_heart_time = 0.0f;
+
+        model = Bezier_Translate(ballon_red_time, ballon_red_speed, bezier_p1, bezier_p2, bezier_p3, bezier_p4) *
+                Matrix_Rotate_Y(g_AngleY + current_time * 0.8f) *
                 Matrix_Scale(200.0f, 200.0f, 200.0f);
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BALLON_RED);
         DrawVirtualObject("ballon_red");
 
-        model = Matrix_Translate(12500.0f, -4550.0f, 4000.0f) *
-                Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.5f) *
+        model = Bezier_Translate(ballon_birthday_time, ballon_birthday_speed, bezier_p1, bezier_p2, bezier_p3, bezier_p4) *
+                Matrix_Rotate_Y(g_AngleY + current_time * 0.8f) *
                 Matrix_Scale(200.0f, 200.0f, 200.0f);
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BALLON_BIRTHDAY);
         DrawVirtualObject("ballon_birthday");
 
-        model = Matrix_Translate(12750.0f, -4550.0f, 3000.0f) *
-                Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.5f) *
+        model = Bezier_Translate(ballon_heart_time, ballon_heart_speed, bezier_p1, bezier_p2, bezier_p3, bezier_p4) *
+                Matrix_Rotate_Y(g_AngleY + current_time * 0.8f) *
                 Matrix_Scale(200.0f, 200.0f, 200.0f);
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BALLON_HEART);
