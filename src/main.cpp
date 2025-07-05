@@ -184,10 +184,6 @@ float g_AngleZ = 0.0f;
 float g_TankRotationAngle = 0.0f; // Ângulo de rotação do tanque
 float g_TankBarrelRotation = 0.0f;
 glm::vec4 g_TankPosition = glm::vec4(10000.0f, -4620.0f, 3000.0f, 1.0f); // Posição global do tanque
-bool g_TankCanMoveFront = true;
-bool g_TankCanMoveBack = true;
-bool g_TankCanMoveRight = true;
-bool g_TankCanMoveLeft = true;
 bool g_UpKeyPressed = false;
 bool g_DownKeyPressed = false;
 bool g_LeftKeyPressed = false;
@@ -541,35 +537,36 @@ int main(int argc, char *argv[])
         // variáveis de controle do tanque
         float tank_speed = 900.0f;
         float tank_rotation_speed = M_PI / 3;
+        float push_back_distance = 50.0f; // unidades para empurrar para fora da parede em caso de colisão
         // direção de movimento do tanque
         glm::vec4 tank_direction = glm::vec4(-sin(g_TankRotationAngle), 0.0f, -cos(g_TankRotationAngle), 0.0f);
 
         // movimenta do tanque
-        if (g_UpKeyPressed && g_TankCanMoveFront) {
+        if (g_UpKeyPressed) {
             g_TankPosition += tank_direction * tank_speed * delta_t;
-            if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && g_TankCanMoveLeft) {
+            if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
                 g_TankRotationAngle += tank_rotation_speed * delta_t;
             }
-            else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && g_TankCanMoveRight) {
+            else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
                 g_TankRotationAngle -= tank_rotation_speed * delta_t;
             }
         }
-        else if (g_DownKeyPressed && g_TankCanMoveBack) {
+        else if (g_DownKeyPressed) {
             g_TankPosition -= tank_direction * tank_speed * delta_t;
-            if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && g_TankCanMoveLeft) {
+            if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
                 g_TankRotationAngle += tank_rotation_speed * delta_t;
             }
-            else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && g_TankCanMoveRight) {
+            else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
                 g_TankRotationAngle -= tank_rotation_speed * delta_t;
             }
         }
-        else if (g_RightKeyPressed && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) != GLFW_PRESS && g_TankCanMoveRight) {
+        else if (g_RightKeyPressed && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) != GLFW_PRESS) {
             g_TankRotationAngle -= tank_rotation_speed * delta_t;
         }
         else if (g_RightKeyPressed && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
             g_TankBarrelRotation -= tank_rotation_speed * delta_t;
         }
-        else if (g_LeftKeyPressed && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) != GLFW_PRESS && g_TankCanMoveLeft) {
+        else if (g_LeftKeyPressed && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) != GLFW_PRESS) {
             g_TankRotationAngle += tank_rotation_speed * delta_t;
         }
         else if (g_LeftKeyPressed && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
@@ -615,8 +612,6 @@ int main(int argc, char *argv[])
         bool wall_1_intersects = intercepts_plane(tank_world_bbox, wall_1_plane); // parede esquerda
         bool wall_2_intersects = intercepts_plane(tank_world_bbox, wall_2_plane); // parede superior
         bool wall_3_intersects = intercepts_plane(tank_world_bbox, wall_3_plane); // parede inferior
-        
-        float push_back_distance = 50.0f; // unidades para empurrar para fora da parede
 
         if (wall_0_intersects) {
             g_TankPosition.x += push_back_distance;
