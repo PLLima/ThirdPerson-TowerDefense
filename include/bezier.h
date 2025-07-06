@@ -43,3 +43,15 @@ glm::mat4 Bezier_Translate(float t, float speed, glm::vec4 p1, glm::vec4 p2, glm
     glm::vec4 position = bezier_position(t, speed, p1, p2, p3, p4);
     return Matrix_Translate(position.x, position.y, position.z);
 }
+
+// Em bezier.h ou similar
+
+// Retorna o vetor de direção (tangente) da curva em um ponto 't' [0, 1]
+glm::vec3 get_bezier_tangent(float t, glm::vec4 p1, glm::vec4 p2, glm::vec4 p3, glm::vec4 p4) {
+    float one_minus_t = 1.0f - t;
+    glm::vec3 tangent = 3.0f * one_minus_t * one_minus_t * glm::vec3(p2 - p1) +
+                        6.0f * one_minus_t * t * glm::vec3(p3 - p2) +
+                        3.0f * t * t * glm::vec3(p4 - p3);
+    // Retorna o vetor normalizado para termos apenas a direção
+    return glm::normalize(tangent);
+}

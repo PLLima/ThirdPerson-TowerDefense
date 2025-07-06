@@ -150,6 +150,7 @@ void TextRendering_PrintMatrixVectorProductDivW(GLFWwindow *window, glm::mat4 M,
 // outras informações do programa. Definidas após main().
 void TextRendering_ShowModelViewProjection(GLFWwindow *window, glm::mat4 projection, glm::mat4 view, glm::mat4 model, glm::vec4 p_model);
 void TextRendering_ShowEulerAngles(GLFWwindow *window);
+void TextRendering_ShowLifeStatus(GLFWwindow *window);
 void TextRendering_ShowProjection(GLFWwindow *window);
 void TextRendering_ShowFramesPerSecond(GLFWwindow *window);
 
@@ -189,6 +190,9 @@ bool g_DownKeyPressed = false;
 bool g_LeftKeyPressed = false;
 bool g_RightKeyPressed = false;
 
+float g_TankLife = 100.0f;
+float g_TowerLife = 100.0f;
+
 // "g_LeftMouseButtonPressed = true" se o usuário está com o botão esquerdo do mouse
 // pressionado no momento atual. Veja função MouseButtonCallback().
 bool g_LeftMouseButtonPressed = false;
@@ -224,7 +228,7 @@ float g_TorsoPositionY = 0.0f;
 bool g_UsePerspectiveProjection = true;
 
 // Variável que controla se o texto informativo será mostrado na tela.
-bool g_ShowInfoText = true;
+bool g_ShowInfoText = false;
 
 // Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
 GLuint g_GpuProgramID = 0;
@@ -388,6 +392,12 @@ int main(int argc, char *argv[])
     float ballon_red_speed = 0.125f;
     float ballon_birthday_speed = 0.06125f;
     float ballon_heart_speed = 0.25f;
+    bool ballon_red_is_visible = true;
+    float ballon_red_damage = 10.0f;
+    bool heart_ballon_is_visible = true;
+    float heart_ballon_damage = 20.0f;
+    bool birthday_ballon_is_visible = true;
+    float birthday_ballon_damage = 30.0f;  
     glm::vec4 camera_position_c = glm::vec4(10000.0f, 6200.0f, 2999.0f, 1.0f); // Ponto "c", centro da câmera
     glm::vec4 camera_up_vector = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);            // Vetor "up" fixado para apontar para o "céu" (eito Y global)
     glm::vec4 camera_lookat_l = glm::vec4(10000.0f, -4900.0f, 3000.0f, 1.0f);   // Ponto "l", para onde a câmera (look-at) estará sempre olhando
@@ -608,10 +618,10 @@ int main(int argc, char *argv[])
         // definimos a bbox do tanque depois da transformação pela matriz model
         std::vector<glm::vec3> tank_world_bbox = compute_world_bbox(model, tank_model_bbox);
 
-        bool wall_0_intersects_tank = intercepts_plane(tank_world_bbox, wall_0_plane); // parede direita
-        bool wall_1_intersects_tank = intercepts_plane(tank_world_bbox, wall_1_plane); // parede esquerda
-        bool wall_2_intersects_tank = intercepts_plane(tank_world_bbox, wall_2_plane); // parede superior
-        bool wall_3_intersects_tank = intercepts_plane(tank_world_bbox, wall_3_plane); // parede inferior
+        bool wall_0_intersects_tank = bbox_intercepts_plane(tank_world_bbox, wall_0_plane); // parede direita
+        bool wall_1_intersects_tank = bbox_intercepts_plane(tank_world_bbox, wall_1_plane); // parede esquerda
+        bool wall_2_intersects_tank = bbox_intercepts_plane(tank_world_bbox, wall_2_plane); // parede superior
+        bool wall_3_intersects_tank = bbox_intercepts_plane(tank_world_bbox, wall_3_plane); // parede inferior
 
         if (wall_0_intersects_tank) {
             g_TankPosition.x += push_back_distance;
@@ -626,10 +636,17 @@ int main(int argc, char *argv[])
             g_TankPosition.z += push_back_distance;
         }
 
+        // definimos a bbox da torre antes da transformação pela matriz model
+        std::vector<glm::vec3> tower_model_bbox = compute_model_bbox(tower_bbox_min, tower_bbox_max);          
+
         // desenhamos a torre
         model = Matrix_Translate(15000.0f, -4850.0f, 3000.0f) *
                 Matrix_Rotate_Y(-M_PI_2) *
                 Matrix_Scale(325.0f, 325.0f, 325.0f);
+
+        // definimos a bbox da torre depois da transformação pela matriz model
+        std::vector<glm::vec3> tower_world_bbox = compute_world_bbox(model, tower_model_bbox);  
+
         for (int tower_part = 1; tower_part <= 5; tower_part++)
         {
             PushMatrix(model);
@@ -662,7 +679,16 @@ int main(int argc, char *argv[])
                 break;
             }
             PopMatrix(model);
-        }
+        }       
+
+        // definimos a bbox do ballon_red antes da transformação pela matriz model
+        std::vector<glm::vec3> ballon_red_model_bbox = compute_model_bbox(ballon_red_bbox_min, ballon_red_bbox_max);
+        
+        // definimos a bbox do birthday_ballon antes da transformação pela matriz model
+        std::vector<glm::vec3> birthday_ballon_model_bbox = compute_model_bbox(birthday_ballon_bbox_min, birthday_ballon_bbox_max);
+        
+        // definimos a bbox do heart_ballon antes da transformação pela matriz model
+        std::vector<glm::vec3> heart_ballon_model_bbox = compute_model_bbox(heart_ballon_bbox_min, heart_ballon_bbox_max);  
 
         // desenhamos os modelos de inimigos
         ballon_red_time += delta_t;
@@ -682,21 +708,96 @@ int main(int argc, char *argv[])
                 Matrix_Scale(200.0f, 200.0f, 200.0f);
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BALLON_RED);
-        DrawVirtualObject("ballon_red");
+        if (ballon_red_is_visible) DrawVirtualObject("ballon_red");
+
+        // definimos a bbox do ballon_red depois da transformação pela matriz model
+        std::vector<glm::vec3> ballon_red_world_bbox = compute_world_bbox(model, ballon_red_model_bbox);        
 
         model = Bezier_Translate(ballon_birthday_time, ballon_birthday_speed, bezier_p1, bezier_p2, bezier_p3, bezier_p4) *
                 Matrix_Rotate_Y(g_AngleY + current_time * 0.8f) *
                 Matrix_Scale(200.0f, 200.0f, 200.0f);
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BALLON_BIRTHDAY);
-        DrawVirtualObject("ballon_birthday");
+        if (birthday_ballon_is_visible) DrawVirtualObject("ballon_birthday");
+
+        // definimos a bbox do birthday_ballon depois da transformação pela matriz model
+        std::vector<glm::vec3> birthday_ballon_world_bbox = compute_world_bbox(model, birthday_ballon_model_bbox);        
 
         model = Bezier_Translate(ballon_heart_time, ballon_heart_speed, bezier_p1, bezier_p2, bezier_p3, bezier_p4) *
                 Matrix_Rotate_Y(g_AngleY + current_time * 0.8f) *
                 Matrix_Scale(200.0f, 200.0f, 200.0f);
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BALLON_HEART);
-        DrawVirtualObject("ballon_heart");
+        if (heart_ballon_is_visible) DrawVirtualObject("ballon_heart");
+
+        // definimos a bbox do heart_ballon depois da transformação pela matriz model
+        std::vector<glm::vec3> heart_ballon_world_bbox = compute_world_bbox(model, heart_ballon_model_bbox);        
+
+        // verifica intersecção balao vermelho / tanque
+        bool ballon_red_intercepts_tank = bbox_intercepts_bbox(tank_world_bbox, ballon_red_world_bbox);
+        // verifica intersecção balao vermelho / torre
+        bool ballon_red_intercepts_tower = bbox_intercepts_bbox(tower_world_bbox, ballon_red_world_bbox);
+
+        // verifica intersecção balao de aniversario / tanque
+        bool birthday_ballon_intercepts_tank = bbox_intercepts_bbox(tank_world_bbox, birthday_ballon_world_bbox);
+        // verifica intersecção balao de aniversario / torre
+        bool birthday_ballon_intercepts_tower = bbox_intercepts_bbox(tower_world_bbox, birthday_ballon_world_bbox);
+        
+        // verifica intersecção balao de coração / tanque
+        bool heart_ballon_intercepts_tank = bbox_intercepts_bbox(tank_world_bbox, heart_ballon_world_bbox);
+        // verifica intersecção balao de coração / torre
+        bool heart_ballon_intercepts_tower = bbox_intercepts_bbox(tower_world_bbox, heart_ballon_world_bbox);        
+        
+        // balão vermelho some se interceptado
+        if (ballon_red_is_visible && ballon_red_intercepts_tower) {
+            if ((g_TowerLife - ballon_red_damage) >= 0)
+                g_TowerLife -= ballon_red_damage;
+            ballon_red_is_visible = false;
+        }
+        else if (ballon_red_is_visible && ballon_red_intercepts_tank) {
+            if ((g_TankLife - ballon_red_damage) >= 0)
+                g_TankLife -= ballon_red_damage;
+            ballon_red_is_visible = false;
+        }
+        // balão vermelho retorna no início da curva
+        else if (ballon_red_time == 0.0) {
+            ballon_red_is_visible = true;
+        }
+
+        // balão de aniversário some se interceptado
+        if (birthday_ballon_is_visible && birthday_ballon_intercepts_tower) {
+            if ((g_TowerLife - birthday_ballon_damage) >= 0)
+                g_TowerLife -= birthday_ballon_damage;
+            birthday_ballon_is_visible = false;
+        }
+        else if (birthday_ballon_is_visible && birthday_ballon_intercepts_tank) {
+            if ((g_TankLife - birthday_ballon_damage) >= 0)
+                g_TankLife -= birthday_ballon_damage;
+            birthday_ballon_is_visible = false;
+        }
+        // balão de aniversário retorna no início da curva
+        else if (ballon_birthday_time == 0.0) {
+            birthday_ballon_is_visible = true;
+        }
+        
+        // balão de coração some se interceptado
+        if (heart_ballon_is_visible && heart_ballon_intercepts_tower) {
+            if ((g_TowerLife - heart_ballon_damage) >= 0)
+                g_TowerLife -= heart_ballon_damage;
+            heart_ballon_is_visible = false;
+        }
+        else if (heart_ballon_is_visible && heart_ballon_intercepts_tank) {
+            if ((g_TankLife - heart_ballon_damage) >= 0)
+                g_TankLife -= heart_ballon_damage;
+            heart_ballon_is_visible = false;
+        }
+        // balão de coração retorna no início da curva
+        else if (ballon_heart_time == 0.0) {
+            heart_ballon_is_visible = true;
+        }
+
+        // Imprimimos na tela o status de vida da torre e do tanque
+        TextRendering_ShowLifeStatus(window);
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
@@ -1640,6 +1741,17 @@ void TextRendering_ShowEulerAngles(GLFWwindow *window)
 
     char buffer[80];
     snprintf(buffer, 80, "Euler Angles rotation matrix = Z(%.2f)*Y(%.2f)*X(%.2f)\n", g_AngleZ, g_AngleY, g_AngleX);
+
+    TextRendering_PrintString(window, buffer, -1.0f + pad / 10, -1.0f + 2 * pad / 10, 1.0f);
+}
+
+// Escrevemos na tela a vida da torre e do tanque
+void TextRendering_ShowLifeStatus(GLFWwindow *window)
+{
+    float pad = TextRendering_LineHeight(window);
+
+    char buffer[80];
+    snprintf(buffer, 80, "TORRE = %.2f     TANQUE = %.2f", g_TowerLife, g_TankLife);
 
     TextRendering_PrintString(window, buffer, -1.0f + pad / 10, -1.0f + 2 * pad / 10, 1.0f);
 }
