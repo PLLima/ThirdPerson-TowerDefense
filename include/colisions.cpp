@@ -1,20 +1,11 @@
 // Headers locais, definidos na pasta "include/"
-#include "colisions.h"
 #include <map>
 #include <vector>
 #include <set>
 #include <algorithm>
-
-// equações dos planos que compõe cenário (cubo)
-const glm::vec4 floor_plane = glm::vec4(0.0f, 1.0f, 0.0f, 4900.f); // face_0
-const glm::vec4 wall_0_plane = glm::vec4(1.0f, 0.0f, 0.0f, -4000.f); // face_2
-const glm::vec4 wall_1_plane = glm::vec4(1.0f, 0.0f, 0.0f, -16000.f); // face_3
-const glm::vec4 wall_2_plane = glm::vec4(0.0f, 0.0f, 1.0f, -9000.f); // face_4
-const glm::vec4 wall_3_plane = glm::vec4(0.0f, 0.0f, 1.0f, 3000.f); // face_5
-
-// vértices máximos e mínimos coletados do .obj do tanque
-const glm::vec3 tank_bbox_min = glm::vec3(-0.447274f, -0.552903f, -1.25f);
-const glm::vec3 tank_bbox_max = glm::vec3(0.447274f, 0.552190f, 1.25f);
+#include <glm/mat4x4.hpp>
+#include <glm/vec4.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 // gera os 8 vertices da bounding box em coordenadas do modelo
 std::vector<glm::vec3> compute_model_bbox(const glm::vec3 &model_bbox_min, const glm::vec3 &model_bbox_max)
@@ -78,5 +69,3 @@ bool intercepts_plane(const std::vector<glm::vec3> world_corners, const glm::vec
 
     return false;
 }
-
-
