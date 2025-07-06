@@ -51,7 +51,7 @@
 #include "utils.h"
 #include "matrices.h"
 #include "bezier.h"
-#include "colisions.h"
+#include "colisions.cpp"
 
 // Constantes
 #define M_PI 3.14159265358979323846
@@ -215,6 +215,17 @@ float g_CameraDistance = 3.5f; // Distância da câmera para a origem
 
 // Variável que controla o uso da câmera em 3a pessoa no tanque
 bool g_UseThirdPersonTankCamera = false;
+
+// equações dos planos que compõe cenário (cubo)
+const glm::vec4 floor_plane = glm::vec4(0.0f, 1.0f, 0.0f, 4900.f); // face_0
+const glm::vec4 wall_0_plane = glm::vec4(1.0f, 0.0f, 0.0f, -4000.f); // face_2
+const glm::vec4 wall_1_plane = glm::vec4(1.0f, 0.0f, 0.0f, -16000.f); // face_3
+const glm::vec4 wall_2_plane = glm::vec4(0.0f, 0.0f, 1.0f, -9000.f); // face_4
+const glm::vec4 wall_3_plane = glm::vec4(0.0f, 0.0f, 1.0f, 3000.f); // face_5
+
+// vértices máximos e mínimos coletados do .obj do tanque
+const glm::vec3 tank_bbox_min = glm::vec3(-0.447274f, -0.552903f, -1.25f);
+const glm::vec3 tank_bbox_max = glm::vec3(0.447274f, 0.552190f, 1.25f);
 
 // Variáveis que controlam rotação do antebraço
 float g_ForearmAngleZ = 0.0f;

@@ -1,20 +1,11 @@
 // Headers locais, definidos na pasta "include/"
-#include "colisions.h"
 #include <map>
 #include <vector>
 #include <set>
 #include <algorithm>
-
-// equações dos planos que compõe cenário (cubo)
-const glm::vec4 floor_plane = glm::vec4(0.0f, 1.0f, 0.0f, 4900.f); // face_0
-const glm::vec4 wall_0_plane = glm::vec4(1.0f, 0.0f, 0.0f, -4000.f); // face_2
-const glm::vec4 wall_1_plane = glm::vec4(1.0f, 0.0f, 0.0f, -16000.f); // face_3
-const glm::vec4 wall_2_plane = glm::vec4(0.0f, 0.0f, 1.0f, -9000.f); // face_4
-const glm::vec4 wall_3_plane = glm::vec4(0.0f, 0.0f, 1.0f, 3000.f); // face_5
-
-// vértices máximos e mínimos coletados do .obj do tanque
-const glm::vec3 tank_bbox_min = glm::vec3(-0.447274f, -0.552903f, -1.25f);
-const glm::vec3 tank_bbox_max = glm::vec3(0.447274f, 0.552190f, 1.25f);
+#include <glm/mat4x4.hpp>
+#include <glm/vec4.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 // vértices máximos e mínimos coletados do .obj do ballon_red
 const glm::vec3 ballon_red_bbox_min = glm::vec3(-1.030526f, 0.000000f, -0.921698f);
@@ -94,6 +85,7 @@ bool bbox_intercepts_plane(const std::vector<glm::vec3> world_corners, const glm
     }
 
     return false;
+<<<<<<< HEAD:src/colisions.cpp
 }
 
 // dado duas bounding boxes em coordenadas do mundo, devolve true caso ocorra colisão
@@ -133,3 +125,6 @@ bool bbox_intercepts_bbox(const std::vector<glm::vec3>& bbox1, const std::vector
 
     return x_overlap && z_overlap;
 }
+=======
+}
+>>>>>>> 89a1d85be385ab155c3baaee5dfacebbf324eb47:include/colisions.cpp
