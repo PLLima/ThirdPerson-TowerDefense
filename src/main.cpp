@@ -611,7 +611,7 @@ int main(int argc, char *argv[])
         }
 
         // definimos a bbox do tanque antes da transformação pela matriz model
-        std::vector<glm::vec3> tank_model_bbox = compute_model_bbox(tank_bbox_min, tank_bbox_max);
+        std::vector<glm::vec3> tank_model_bbox = Compute_Model_BBox(tank_bbox_min, tank_bbox_max);
 
         // desenhamos o tanque
         model = Matrix_Translate(g_TankPosition.x, g_TankPosition.y, g_TankPosition.z) *
@@ -643,12 +643,12 @@ int main(int argc, char *argv[])
         }
 
         // definimos a bbox do tanque depois da transformação pela matriz model
-        std::vector<glm::vec3> tank_world_bbox = compute_world_bbox(model, tank_model_bbox);
+        std::vector<glm::vec3> tank_world_bbox = Compute_World_BBox(model, tank_model_bbox);
 
-        bool wall_0_intersects_tank = bbox_intercepts_plane(tank_world_bbox, wall_0_plane); // parede direita
-        bool wall_1_intersects_tank = bbox_intercepts_plane(tank_world_bbox, wall_1_plane); // parede esquerda
-        bool wall_2_intersects_tank = bbox_intercepts_plane(tank_world_bbox, wall_2_plane); // parede superior
-        bool wall_3_intersects_tank = bbox_intercepts_plane(tank_world_bbox, wall_3_plane); // parede inferior
+        bool wall_0_intersects_tank = BBox_Intercepts_Plane(tank_world_bbox, wall_0_plane); // parede direita
+        bool wall_1_intersects_tank = BBox_Intercepts_Plane(tank_world_bbox, wall_1_plane); // parede esquerda
+        bool wall_2_intersects_tank = BBox_Intercepts_Plane(tank_world_bbox, wall_2_plane); // parede superior
+        bool wall_3_intersects_tank = BBox_Intercepts_Plane(tank_world_bbox, wall_3_plane); // parede inferior
 
         if (wall_0_intersects_tank) {
             g_TankPosition.x += push_back_distance;
@@ -664,7 +664,7 @@ int main(int argc, char *argv[])
         }
 
         // definimos a bbox da torre antes da transformação pela matriz model
-        std::vector<glm::vec3> tower_model_bbox = compute_model_bbox(tower_bbox_min, tower_bbox_max);          
+        std::vector<glm::vec3> tower_model_bbox = Compute_Model_BBox(tower_bbox_min, tower_bbox_max);          
 
         // desenhamos a torre
         model = Matrix_Translate(15000.0f, -4850.0f, 3000.0f) *
@@ -672,7 +672,7 @@ int main(int argc, char *argv[])
                 Matrix_Scale(325.0f, 325.0f, 325.0f);
 
         // definimos a bbox da torre depois da transformação pela matriz model
-        std::vector<glm::vec3> tower_world_bbox = compute_world_bbox(model, tower_model_bbox);  
+        std::vector<glm::vec3> tower_world_bbox = Compute_World_BBox(model, tower_model_bbox);  
 
         for (int tower_part = 1; tower_part <= 5; tower_part++)
         {
@@ -709,13 +709,13 @@ int main(int argc, char *argv[])
         }       
 
         // definimos a bbox do ballon_red antes da transformação pela matriz model
-        std::vector<glm::vec3> ballon_red_model_bbox = compute_model_bbox(ballon_red_bbox_min, ballon_red_bbox_max);
+        std::vector<glm::vec3> ballon_red_model_bbox = Compute_Model_BBox(ballon_red_bbox_min, ballon_red_bbox_max);
         
         // definimos a bbox do birthday_ballon antes da transformação pela matriz model
-        std::vector<glm::vec3> birthday_ballon_model_bbox = compute_model_bbox(birthday_ballon_bbox_min, birthday_ballon_bbox_max);
+        std::vector<glm::vec3> birthday_ballon_model_bbox = Compute_Model_BBox(birthday_ballon_bbox_min, birthday_ballon_bbox_max);
         
         // definimos a bbox do heart_ballon antes da transformação pela matriz model
-        std::vector<glm::vec3> heart_ballon_model_bbox = compute_model_bbox(heart_ballon_bbox_min, heart_ballon_bbox_max);  
+        std::vector<glm::vec3> heart_ballon_model_bbox = Compute_Model_BBox(heart_ballon_bbox_min, heart_ballon_bbox_max);  
 
         // desenhamos os modelos de inimigos
         ballon_red_time += delta_t;
@@ -738,7 +738,7 @@ int main(int argc, char *argv[])
         if (ballon_red_is_visible) DrawVirtualObject("ballon_red");
 
         // definimos a bbox do ballon_red depois da transformação pela matriz model
-        std::vector<glm::vec3> ballon_red_world_bbox = compute_world_bbox(model, ballon_red_model_bbox);        
+        std::vector<glm::vec3> ballon_red_world_bbox = Compute_World_BBox(model, ballon_red_model_bbox);        
 
         model = Bezier_Translate(ballon_birthday_time, ballon_birthday_speed, bezier_p1, bezier_p2, bezier_p3, bezier_p4) *
                 Matrix_Rotate_Y(g_AngleY + current_time * 0.8f) *
@@ -748,7 +748,7 @@ int main(int argc, char *argv[])
         if (birthday_ballon_is_visible) DrawVirtualObject("ballon_birthday");
 
         // definimos a bbox do birthday_ballon depois da transformação pela matriz model
-        std::vector<glm::vec3> birthday_ballon_world_bbox = compute_world_bbox(model, birthday_ballon_model_bbox);        
+        std::vector<glm::vec3> birthday_ballon_world_bbox = Compute_World_BBox(model, birthday_ballon_model_bbox);        
 
         model = Bezier_Translate(ballon_heart_time, ballon_heart_speed, bezier_p1, bezier_p2, bezier_p3, bezier_p4) *
                 Matrix_Rotate_Y(g_AngleY + current_time * 0.8f) *
@@ -758,22 +758,22 @@ int main(int argc, char *argv[])
         if (heart_ballon_is_visible) DrawVirtualObject("ballon_heart");
 
         // definimos a bbox do heart_ballon depois da transformação pela matriz model
-        std::vector<glm::vec3> heart_ballon_world_bbox = compute_world_bbox(model, heart_ballon_model_bbox);        
+        std::vector<glm::vec3> heart_ballon_world_bbox = Compute_World_BBox(model, heart_ballon_model_bbox);        
 
         // verifica intersecção balao vermelho / tanque
-        bool ballon_red_intercepts_tank = bbox_intercepts_bbox(tank_world_bbox, ballon_red_world_bbox);
+        bool ballon_red_intercepts_tank = BBox_Intercepts_BBox(tank_world_bbox, ballon_red_world_bbox);
         // verifica intersecção balao vermelho / torre
-        bool ballon_red_intercepts_tower = bbox_intercepts_bbox(tower_world_bbox, ballon_red_world_bbox);
+        bool ballon_red_intercepts_tower = BBox_Intercepts_BBox(tower_world_bbox, ballon_red_world_bbox);
 
         // verifica intersecção balao de aniversario / tanque
-        bool birthday_ballon_intercepts_tank = bbox_intercepts_bbox(tank_world_bbox, birthday_ballon_world_bbox);
+        bool birthday_ballon_intercepts_tank = BBox_Intercepts_BBox(tank_world_bbox, birthday_ballon_world_bbox);
         // verifica intersecção balao de aniversario / torre
-        bool birthday_ballon_intercepts_tower = bbox_intercepts_bbox(tower_world_bbox, birthday_ballon_world_bbox);
+        bool birthday_ballon_intercepts_tower = BBox_Intercepts_BBox(tower_world_bbox, birthday_ballon_world_bbox);
         
         // verifica intersecção balao de coração / tanque
-        bool heart_ballon_intercepts_tank = bbox_intercepts_bbox(tank_world_bbox, heart_ballon_world_bbox);
+        bool heart_ballon_intercepts_tank = BBox_Intercepts_BBox(tank_world_bbox, heart_ballon_world_bbox);
         // verifica intersecção balao de coração / torre
-        bool heart_ballon_intercepts_tower = bbox_intercepts_bbox(tower_world_bbox, heart_ballon_world_bbox);        
+        bool heart_ballon_intercepts_tower = BBox_Intercepts_BBox(tower_world_bbox, heart_ballon_world_bbox);        
         
         // balão vermelho some se interceptado
         if (ballon_red_is_visible && ballon_red_intercepts_tower) {

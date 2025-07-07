@@ -9,7 +9,7 @@
 
 // gera os 8 vertices da bounding box em coordenadas do modelo,
 // a partir dos mínimos e máximos da bounding box do modelo
-std::vector<glm::vec3> compute_model_bbox(const glm::vec3 &model_bbox_min, const glm::vec3 &model_bbox_max)
+std::vector<glm::vec3> Compute_Model_BBox(const glm::vec3 &model_bbox_min, const glm::vec3 &model_bbox_max)
 {
     std::vector<glm::vec3> model_corners(8);
 
@@ -27,7 +27,7 @@ std::vector<glm::vec3> compute_model_bbox(const glm::vec3 &model_bbox_min, const
 
 // gera os 8 vertices da bounding box em coordenadas do mundo,
 // a partir da matriz model e dos 8 vertices da bounding box em coordenadas do modelo
-std::vector<glm::vec3> compute_world_bbox(const glm::mat4 &model, const std::vector<glm::vec3> model_corners)
+std::vector<glm::vec3> Compute_World_BBox(const glm::mat4 &model, const std::vector<glm::vec3> model_corners)
 {
     std::vector<glm::vec3> world_corners(8);
 
@@ -43,7 +43,7 @@ std::vector<glm::vec3> compute_world_bbox(const glm::mat4 &model, const std::vec
 
 // verifica se bbox definida pelos 8 vértices de world_corners intersecta
 // o plano definido por plane e devolve true caso ocorra interceptação
-bool bbox_intercepts_plane(const std::vector<glm::vec3> world_corners, const glm::vec4 plane)
+bool BBox_Intercepts_Plane(const std::vector<glm::vec3> world_corners, const glm::vec4 plane)
 {
     int num_front_vertices = 0;
     int num_back_vertices = 0;
@@ -72,7 +72,7 @@ bool bbox_intercepts_plane(const std::vector<glm::vec3> world_corners, const glm
 }
 
 // dado duas bounding boxes em coordenadas do mundo, devolve true caso ocorra colisão
-bool bbox_intercepts_bbox(const std::vector<glm::vec3>& bbox1, const std::vector<glm::vec3>& bbox2)
+bool BBox_Intercepts_BBox(const std::vector<glm::vec3>& bbox1, const std::vector<glm::vec3>& bbox2)
 {
     // limites extremos para bbox1
     float min1_x = std::numeric_limits<float>::max();
