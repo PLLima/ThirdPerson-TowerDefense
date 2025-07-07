@@ -7,22 +7,6 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-// vértices máximos e mínimos coletados do .obj do ballon_red
-const glm::vec3 ballon_red_bbox_min = glm::vec3(-1.030526f, 0.000000f, -0.921698f);
-const glm::vec3 ballon_red_bbox_max = glm::vec3(1.238787f, 2.474031f, 2.363923f);
-
-// vértices máximos e mínimos coletados do .obj do birthday_ballon
-const glm::vec3 birthday_ballon_bbox_min = glm::vec3(-0.586542f, -1.250000f, -1.217028f);
-const glm::vec3 birthday_ballon_bbox_max = glm::vec3(0.591365f, 1.250000f, 1.212138f);
-
-// vértices máximos e mínimos coletados do .obj do heart_ballon
-const glm::vec3 heart_ballon_bbox_min = glm::vec3(-1.088844f, 0.156203f, -1.036875f);
-const glm::vec3 heart_ballon_bbox_max = glm::vec3(1.222942f, 1.592713f, 2.363923f);
-
-// vértices máximos e mínimos coletados do .obj da torre
-const glm::vec3 tower_bbox_min = glm::vec3(-0.447274f, -0.552903f, -1.25f);
-const glm::vec3 tower_bbox_max = glm::vec3(0.447274f, 0.552190f, 1.25f);
-
 // gera os 8 vertices da bounding box em coordenadas do modelo,
 // a partir dos mínimos e máximos da bounding box do modelo
 std::vector<glm::vec3> compute_model_bbox(const glm::vec3 &model_bbox_min, const glm::vec3 &model_bbox_max)
@@ -85,7 +69,6 @@ bool bbox_intercepts_plane(const std::vector<glm::vec3> world_corners, const glm
     }
 
     return false;
-<<<<<<< HEAD:src/colisions.cpp
 }
 
 // dado duas bounding boxes em coordenadas do mundo, devolve true caso ocorra colisão
@@ -125,6 +108,3 @@ bool bbox_intercepts_bbox(const std::vector<glm::vec3>& bbox1, const std::vector
 
     return x_overlap && z_overlap;
 }
-=======
-}
->>>>>>> 89a1d85be385ab155c3baaee5dfacebbf324eb47:include/colisions.cpp

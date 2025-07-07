@@ -227,6 +227,22 @@ const glm::vec4 wall_3_plane = glm::vec4(0.0f, 0.0f, 1.0f, 3000.f); // face_5
 const glm::vec3 tank_bbox_min = glm::vec3(-0.447274f, -0.552903f, -1.25f);
 const glm::vec3 tank_bbox_max = glm::vec3(0.447274f, 0.552190f, 1.25f);
 
+// vértices máximos e mínimos coletados do .obj do ballon_red
+const glm::vec3 ballon_red_bbox_min = glm::vec3(-1.030526f, 0.000000f, -0.921698f);
+const glm::vec3 ballon_red_bbox_max = glm::vec3(1.238787f, 2.474031f, 2.363923f);
+
+// vértices máximos e mínimos coletados do .obj do birthday_ballon
+const glm::vec3 birthday_ballon_bbox_min = glm::vec3(-0.586542f, -1.250000f, -1.217028f);
+const glm::vec3 birthday_ballon_bbox_max = glm::vec3(0.591365f, 1.250000f, 1.212138f);
+
+// vértices máximos e mínimos coletados do .obj do heart_ballon
+const glm::vec3 heart_ballon_bbox_min = glm::vec3(-1.088844f, 0.156203f, -1.036875f);
+const glm::vec3 heart_ballon_bbox_max = glm::vec3(1.222942f, 1.592713f, 2.363923f);
+
+// vértices máximos e mínimos coletados do .obj da torre
+const glm::vec3 tower_bbox_min = glm::vec3(-0.447274f, -0.552903f, -1.25f);
+const glm::vec3 tower_bbox_max = glm::vec3(0.447274f, 0.552190f, 1.25f);
+
 // Variáveis que controlam rotação do antebraço
 float g_ForearmAngleZ = 0.0f;
 float g_ForearmAngleX = 0.0f;
