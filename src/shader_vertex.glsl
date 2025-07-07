@@ -10,6 +10,10 @@ layout (location = 2) in vec2 texture_coefficients;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform int object_id;
+
+// Variáveis para acesso das imagens de textura
+uniform sampler2D TextureImage6;
 
 // Atributos de vértice que serão gerados como saída ("out") pelo Vertex Shader.
 // ** Estes serão interpolados pelo rasterizador! ** gerando, assim, valores
@@ -19,6 +23,9 @@ out vec4 position_world;
 out vec4 position_model;
 out vec4 normal;
 out vec2 texcoords;
+out vec4 color_v;
+
+#define DARTLING_TOWER 10
 
 void main()
 {
@@ -63,5 +70,46 @@ void main()
 
     // Coordenadas de textura obtidas do arquivo OBJ (se existirem!)
     texcoords = texture_coefficients;
-}
 
+    // Realizar interpolação de Gourad para a textura da grama
+    if (object_id == DARTLING_TOWER)
+    {
+        // Obtemos a posição da câmera utilizando a inversa da matriz que define o
+        // sistema de coordenadas da câmera.
+        vec4 origin = vec4(0.0, 0.0, 0.0, 1.0);
+        vec4 camera_position = inverse(view) * origin;
+
+        // Normal do fragmento atual, interpolada pelo rasterizador a partir das
+        // normais de cada vértice.
+        vec4 n = normalize(normal);
+
+        // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
+        vec4 l = normalize(vec4(1.0,1.0,1.0,0.0));
+
+        // Vetor que define o sentido da câmera em relação ao ponto atual.
+        vec4 v = normalize(camera_position - position_world);
+
+        // Vetor presente no termo de Blinn-Phong
+        vec4 h = normalize(v + l);
+
+        // Coordenadas de textura U e V
+        float U = texcoords.x;
+        float V = texcoords.y;
+
+        // Equações de Iluminação
+        vec3 Kd = vec3(0.0, 0.0, 0.0);
+        vec3 Ka = vec3(0.075, 0.075, 0.075);
+        vec3 Ks = vec3(0.0, 0.0, 0.0);
+        float q = 1.0;
+
+        float lambert = max(0,dot(n,l));
+        float blinn_phong = pow(max(0,dot(n,h)), q);
+
+        Kd = texture(TextureImage6, vec2(U,V)).rgb;
+        // Aplicar as cores vértice à vértice (Gourad shadding)
+        color_v.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
+        color_v.a = 1;
+    }
+    else
+        color_v = vec4(0.0, 0.0, 0.0, 1.0);
+}

@@ -6,6 +6,7 @@
 // "shader_vertex.glsl" e "main.cpp".
 in vec4 position_world;
 in vec4 normal;
+in vec4 color_v;
 
 // Posição do vértice atual no sistema de coordenadas local do modelo.
 in vec4 position_model;
@@ -107,77 +108,111 @@ void main()
     if(int(rounded_V) % 2 == 1) // Se ímpar
         V = 1 - V;
 
+    // Equações de iluminação
     vec3 Kd = vec3(0.0, 0.0, 0.0);
     vec3 Ka = vec3(0.075, 0.075, 0.075);
     vec3 Ks = vec3(0.0, 0.0, 0.0);
     float q = 1.0;
+    float lambert = max(0,dot(n,l));
+    float blinn_phong = pow(max(0,dot(n,h)), q);
     switch (object_id) {
         case FACE_0: // Grass
             Kd = texture(TextureImage0, vec2(U,V)).rgb;
             Ks = texture(TextureImage1, vec2(U,V)).rgb;
             q = 60.0;
+            blinn_phong = pow(max(0,dot(n,h)), q);
+            // Aplicar as cores pixel a pixel (Phong shadding)
+            color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case FACE_1: // Grass
             Kd = texture(TextureImage0, vec2(U,V)).rgb;
             Ks = texture(TextureImage1, vec2(U,V)).rgb;
             q = 60.0;
+            blinn_phong = pow(max(0,dot(n,h)), q);
+            // Aplicar as cores pixel a pixel (Phong shadding)
+            color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case FACE_2: // Baloon
             Kd = texture(TextureImage0, vec2(U,V)).rgb;
             Ks = texture(TextureImage1, vec2(U,V)).rgb;
             q = 60.0;
+            blinn_phong = pow(max(0,dot(n,h)), q);
+            // Aplicar as cores pixel a pixel (Phong shadding)
+            color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case FACE_3: // Grass
             Kd = texture(TextureImage0, vec2(U,V)).rgb;
             Ks = texture(TextureImage1, vec2(U,V)).rgb;
             q = 60.0;
+            blinn_phong = pow(max(0,dot(n,h)), q);
+            // Aplicar as cores pixel a pixel (Phong shadding)
+            color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case FACE_4: // Baloon
             Kd = texture(TextureImage0, vec2(U,V)).rgb;
             Ks = texture(TextureImage1, vec2(U,V)).rgb;
             q = 60.0;
+            blinn_phong = pow(max(0,dot(n,h)), q);
+            // Aplicar as cores pixel a pixel (Phong shadding)
+            color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case FACE_5: // Grass
             Kd = texture(TextureImage0, vec2(U,V)).rgb;
             Ks = texture(TextureImage1, vec2(U,V)).rgb;
             q = 60.0;
+            blinn_phong = pow(max(0,dot(n,h)), q);
+            // Aplicar as cores pixel a pixel (Phong shadding)
+            color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case ROAD:
             Kd = texture(TextureImage2, vec2(U,V)).rgb;
+            // Aplicar as cores pixel a pixel (Phong shadding)
+            color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case TANK_0: // Tank Barrel
             Kd = texture(TextureImage3, vec2(U,V)).rgb;
+            // Aplicar as cores pixel a pixel (Phong shadding)
+            color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case TANK_1: // Tank Base
             Kd = texture(TextureImage4, vec2(U,V)).rgb;
+            // Aplicar as cores pixel a pixel (Phong shadding)
+            color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case TANK_2: // Tank Wheels
             Kd = texture(TextureImage5, vec2(U,V)).rgb;
+            // Aplicar as cores pixel a pixel (Phong shadding)
+            color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case DARTLING_TOWER:
-            Kd = texture(TextureImage6, vec2(U,V)).rgb;
+            // Aplicar as cores pixel a pixel (Phong shadding)
+            color = color_v;
             break;
         case BALLON_RED:
             Kd = texture(TextureImage7, vec2(U,V)).rgb;
             Ks = vec3(1.0, 1.0, 1.0);
             q = 40.0;
+            blinn_phong = pow(max(0,dot(n,h)), q);
+            // Aplicar as cores pixel a pixel (Phong shadding)
+            color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case BALLON_BIRTHDAY:
             Kd = texture(TextureImage8, vec2(U,V)).rgb;
             Ks = vec3(1.0, 1.0, 1.0);
             q = 40.0;
+            blinn_phong = pow(max(0,dot(n,h)), q);
+            // Aplicar as cores pixel a pixel (Phong shadding)
+            color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case BALLON_HEART:
             Kd = texture(TextureImage9, vec2(U,V)).rgb;
-            Ks = vec3(1.0, 1.0, 1.0);
+            Ks = vec3(0.5, 0.5, 0.5);
             q = 40.0;
+            blinn_phong = pow(max(0,dot(n,h)), q);
+            // Aplicar as cores pixel a pixel (Phong shadding)
+            color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
     }
-
-    // Equação de Iluminação
-    float lambert = max(0,dot(n,l));
-    float blinn_phong = pow(max(0,dot(n,h)), q);
-    color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
