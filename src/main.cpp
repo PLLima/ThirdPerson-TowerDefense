@@ -185,10 +185,12 @@ float g_AngleZ = 0.0f;
 float g_TankRotationAngle = 0.0f; // Ângulo de rotação do tanque
 float g_TankBarrelRotation = 0.0f;
 glm::vec4 g_TankPosition = glm::vec4(10000.0f, -4620.0f, 3000.0f, 1.0f); // Posição global do tanque
+glm::vec4 g_ProjectilePosition = glm::vec4(-0.12f, 0.36f, -1.24f, 1.0f); // Posição do projétil
 bool g_UpKeyPressed = false;
 bool g_DownKeyPressed = false;
 bool g_LeftKeyPressed = false;
 bool g_RightKeyPressed = false;
+bool g_KeySpacePressed = false;
 
 float g_TankLife = 100.0f;
 float g_TowerLife = 100.0f;
@@ -242,6 +244,10 @@ const glm::vec3 heart_ballon_bbox_max = glm::vec3(1.222942f, 1.592713f, 2.363923
 // vértices máximos e mínimos coletados do .obj da torre
 const glm::vec3 tower_bbox_min = glm::vec3(-0.447274f, -0.552903f, -1.25f);
 const glm::vec3 tower_bbox_max = glm::vec3(0.447274f, 0.552190f, 1.25f);
+
+// vértices máximos e mínimos coletados do .obj da esfera
+const glm::vec3 sphere_bbox_min = glm::vec3(-1.0f, -1.0f, -1.0f);
+const glm::vec3 sphere_bbox_max = glm::vec3(1.0f, 1.0f, 1.0f);
 
 // Variáveis que controlam rotação do antebraço
 float g_ForearmAngleZ = 0.0f;
@@ -382,6 +388,10 @@ int main(int argc, char *argv[])
     ComputeNormals(&ballonheartmodel);
     BuildTrianglesAndAddToVirtualScene(&ballonheartmodel);
 
+    ObjModel spheremodel("../../assets/towers/sphere.obj");
+    ComputeNormals(&spheremodel);
+    BuildTrianglesAndAddToVirtualScene(&spheremodel);    
+
     if (argc > 1)
     {
         ObjModel model(argv[1]);
@@ -424,7 +434,8 @@ int main(int argc, char *argv[])
     bool heart_ballon_is_visible = true;
     float heart_ballon_damage = 20.0f;
     bool birthday_ballon_is_visible = true;
-    float birthday_ballon_damage = 30.0f;  
+    float birthday_ballon_damage = 30.0f;
+    bool sphere_is_visible = false;
     glm::vec4 camera_position_c = glm::vec4(10000.0f, 6200.0f, 2999.0f, 1.0f); // Ponto "c", centro da câmera
     glm::vec4 camera_up_vector = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);            // Vetor "up" fixado para apontar para o "céu" (eito Y global)
     glm::vec4 camera_lookat_l = glm::vec4(10000.0f, -4900.0f, 3000.0f, 1.0f);   // Ponto "l", para onde a câmera (look-at) estará sempre olhando
@@ -557,6 +568,8 @@ int main(int argc, char *argv[])
         #define BALLON_BIRTHDAY 12
         #define BALLON_HEART 13
 
+        #define SPHERE 14
+
         // desenhamos os modelos para geração do cenário (cubo)
         for (int obj_index = 0; obj_index <= 5; obj_index++)
         {
@@ -574,9 +587,20 @@ int main(int argc, char *argv[])
         // variáveis de controle do tanque
         float tank_speed = 900.0f;
         float tank_rotation_speed = M_PI / 3;
+        float projectile_speed = 10.0f;
         float push_back_distance = 50.0f; // unidades para empurrar para fora da parede em caso de colisão
         // direção de movimento do tanque
         glm::vec4 tank_direction = glm::vec4(-sin(g_TankRotationAngle), 0.0f, -cos(g_TankRotationAngle), 0.0f);
+        // direção de movimento do barril do tanque
+        glm::vec4 tank_barrel_direction = glm::vec4(-sin(g_TankBarrelRotation), 0.0f, -cos(g_TankBarrelRotation), 0.0f);
+        // posição inicial do projétil
+        glm::vec4 projectile_initial_position = glm::vec4(-0.12f, 0.36f, -1.24f, 1.0f);
+        
+        // controla disparo do tanque
+        if (g_KeySpacePressed) {
+            sphere_is_visible = true;
+            g_ProjectilePosition += tank_barrel_direction * projectile_speed * delta_t;
+        }
 
         // movimenta do tanque
         if (g_UpKeyPressed) {
@@ -613,27 +637,50 @@ int main(int argc, char *argv[])
         // definimos a bbox do tanque antes da transformação pela matriz model
         std::vector<glm::vec3> tank_model_bbox = Compute_Model_BBox(tank_bbox_min, tank_bbox_max);
 
+        // definimos a bbox da esfera antes da transformação pela matriz model
+        std::vector<glm::vec3> sphere_model_bbox = Compute_Model_BBox(sphere_bbox_min, sphere_bbox_max);         
+
         // desenhamos o tanque
         model = Matrix_Translate(g_TankPosition.x, g_TankPosition.y, g_TankPosition.z) *
                 Matrix_Rotate_Y(g_TankRotationAngle) *
                 Matrix_Scale(500.0f, 500.0f, 500.0f);
+
+        std::vector<glm::vec3> sphere_world_bbox;                
+
         for (int tank_part = 0; tank_part < 3; tank_part++)
         {
             PushMatrix(model);
             switch (tank_part)
             {
-            case 0:
-                model = model * Matrix_Rotate_Tank_Barrel(g_VirtualScene, "tank_0", g_TankBarrelRotation);
-                glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-                glUniform1i(g_object_id_uniform, TANK_0);
-                DrawVirtualObject("tank_0");
+            case 0: // canhão (barril)
+                {
+                    // Aplica apenas a rotação do canhão (pivô já está correto no .obj)
+                    model = model * Matrix_Rotate_Tank_Barrel(g_VirtualScene, "tank_0", 0.0f);
+
+                    // Desenha o barril do tanque
+                    glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+                    glUniform1i(g_object_id_uniform, TANK_0);
+                    DrawVirtualObject("tank_0");
+
+                    // Esfera na ponta do cano //0.025f, 0.025f, 0.025f
+                    model = model * Matrix_Translate(g_ProjectilePosition.x, g_ProjectilePosition.y, g_ProjectilePosition.z)   // para frente no +Z local
+                                * Matrix_Scale(0.1f, 0.1f, 0.1f);      // escala da esfera
+                    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+                    glUniform1i(g_object_id_uniform, SPHERE);
+                    if (sphere_is_visible) DrawVirtualObject("the_sphere");
+
+                    // definimos a bbox da esfera depois da transformação pela matriz model
+                    sphere_world_bbox = Compute_World_BBox(model, sphere_model_bbox);
+                }
                 break;
-            case 1:
+
+            case 1: // base do tanque
                 glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
                 glUniform1i(g_object_id_uniform, TANK_1);
                 DrawVirtualObject("tank_1");
                 break;
-            case 2:
+
+            case 2: // esteiras ou outros detalhes
                 glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
                 glUniform1i(g_object_id_uniform, TANK_2);
                 DrawVirtualObject("tank_2");
@@ -661,7 +708,7 @@ int main(int argc, char *argv[])
         }
         if (wall_3_intersects_tank) {
             g_TankPosition.z += push_back_distance;
-        }
+        }       
 
         // definimos a bbox da torre antes da transformação pela matriz model
         std::vector<glm::vec3> tower_model_bbox = Compute_Model_BBox(tower_bbox_min, tower_bbox_max);          
@@ -758,7 +805,7 @@ int main(int argc, char *argv[])
         if (heart_ballon_is_visible) DrawVirtualObject("ballon_heart");
 
         // definimos a bbox do heart_ballon depois da transformação pela matriz model
-        std::vector<glm::vec3> heart_ballon_world_bbox = Compute_World_BBox(model, heart_ballon_model_bbox);        
+        std::vector<glm::vec3> heart_ballon_world_bbox = Compute_World_BBox(model, heart_ballon_model_bbox);         
 
         // verifica intersecção balao vermelho / tanque
         bool ballon_red_intercepts_tank = BBox_Intercepts_BBox(tank_world_bbox, ballon_red_world_bbox);
@@ -773,19 +820,39 @@ int main(int argc, char *argv[])
         // verifica intersecção balao de coração / tanque
         bool heart_ballon_intercepts_tank = BBox_Intercepts_BBox(tank_world_bbox, heart_ballon_world_bbox);
         // verifica intersecção balao de coração / torre
-        bool heart_ballon_intercepts_tower = BBox_Intercepts_BBox(tower_world_bbox, heart_ballon_world_bbox);        
+        bool heart_ballon_intercepts_tower = BBox_Intercepts_BBox(tower_world_bbox, heart_ballon_world_bbox);
+        
+        // verifica intersecção da esfera com cada um dos planos
+        bool wall_0_intersects_sphere = BBox_Intercepts_Plane(sphere_world_bbox, wall_0_plane); // parede direita
+        bool wall_1_intersects_sphere = BBox_Intercepts_Plane(sphere_world_bbox, wall_1_plane); // parede esquerda
+        bool wall_2_intersects_sphere = BBox_Intercepts_Plane(sphere_world_bbox, wall_2_plane); // parede superior
+        bool wall_3_intersects_sphere = BBox_Intercepts_Plane(sphere_world_bbox, wall_3_plane); // parede inferior
+        
+        // verifica intersecção esfera / balão vermelho
+        bool sphere_intercepts_ballon_red = BBox_Intercepts_BBox(sphere_world_bbox, ballon_red_world_bbox);
+        // verifica intersecção esfera / balão anversario
+        bool sphere_intercepts_birthday_ballon = BBox_Intercepts_BBox(sphere_world_bbox, birthday_ballon_world_bbox);
+        // verifica intersecção esfera / balão de coração
+        bool sphere_intercepts_heart_ballon = BBox_Intercepts_BBox(sphere_world_bbox, heart_ballon_world_bbox);        
         
         // balão vermelho some se interceptado
         if (ballon_red_is_visible && ballon_red_intercepts_tower) {
-            if ((g_TowerLife - ballon_red_damage) >= 0)
+            if ((g_TowerLife - ballon_red_damage) >= 0) // torre toma dano
                 g_TowerLife -= ballon_red_damage;
-            ballon_red_is_visible = false;
+            ballon_red_is_visible = false; // balão desaparece
         }
         else if (ballon_red_is_visible && ballon_red_intercepts_tank) {
             if ((g_TankLife - ballon_red_damage) >= 0)
                 g_TankLife -= ballon_red_damage;
             ballon_red_is_visible = false;
         }
+        else if (ballon_red_is_visible && sphere_intercepts_ballon_red) {
+            fprintf(stderr, "intercepted red\n");
+            g_KeySpacePressed = false;
+            ballon_red_is_visible = false;
+            sphere_is_visible = false;
+            g_ProjectilePosition = projectile_initial_position;
+        }              
         // balão vermelho retorna no início da curva
         else if (ballon_red_time == 0.0) {
             ballon_red_is_visible = true;
@@ -802,6 +869,13 @@ int main(int argc, char *argv[])
                 g_TankLife -= birthday_ballon_damage;
             birthday_ballon_is_visible = false;
         }
+        else if (birthday_ballon_is_visible && sphere_intercepts_birthday_ballon) {
+            fprintf(stderr, "intercepted birthday\n");
+            g_KeySpacePressed = false;
+            birthday_ballon_is_visible = false;
+            sphere_is_visible = false;
+            g_ProjectilePosition = projectile_initial_position;
+        }        
         // balão de aniversário retorna no início da curva
         else if (ballon_birthday_time == 0.0) {
             birthday_ballon_is_visible = true;
@@ -818,9 +892,27 @@ int main(int argc, char *argv[])
                 g_TankLife -= heart_ballon_damage;
             heart_ballon_is_visible = false;
         }
+        else if (heart_ballon_is_visible && sphere_intercepts_heart_ballon) {
+            fprintf(stderr, "intercepted heart\n");
+            g_KeySpacePressed = false;
+            heart_ballon_is_visible = false;
+            sphere_is_visible = false;
+            g_ProjectilePosition = projectile_initial_position;
+        }          
         // balão de coração retorna no início da curva
         else if (ballon_heart_time == 0.0) {
             heart_ballon_is_visible = true;
+        }
+
+        if (wall_0_intersects_sphere || 
+            wall_1_intersects_sphere || 
+            wall_2_intersects_sphere || 
+            wall_3_intersects_sphere) {
+
+            fprintf(stderr, "intercepted plane\n");
+            g_KeySpacePressed = false;
+            sphere_is_visible = false;
+            g_ProjectilePosition = projectile_initial_position;            
         }
 
         // Imprimimos na tela o status de vida da torre e do tanque
@@ -1618,6 +1710,13 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mod)
         else if (action == GLFW_RELEASE)
             g_RightKeyPressed = false;
     }
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+    {
+        if (action == GLFW_PRESS)
+            g_KeySpacePressed = true;
+        else if (action == GLFW_RELEASE)
+            g_KeySpacePressed = false;
+    }
 
     if (key == GLFW_KEY_X && action == GLFW_PRESS)
     {
@@ -1634,16 +1733,16 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mod)
     }
 
     // Se o usuário apertar a tecla espaço, resetamos os ângulos de Euler para zero.
-    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-    {
-        g_AngleX = 0.0f;
-        g_AngleY = 0.0f;
-        g_AngleZ = 0.0f;
-        g_ForearmAngleX = 0.0f;
-        g_ForearmAngleZ = 0.0f;
-        g_TorsoPositionX = 0.0f;
-        g_TorsoPositionY = 0.0f;
-    }
+    // if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+    // {
+    //     g_AngleX = 0.0f;
+    //     g_AngleY = 0.0f;
+    //     g_AngleZ = 0.0f;
+    //     g_ForearmAngleX = 0.0f;
+    //     g_ForearmAngleZ = 0.0f;
+    //     g_TorsoPositionX = 0.0f;
+    //     g_TorsoPositionY = 0.0f;
+    // }
 
     // Se o usuário apertar a tecla P, utilizamos projeção perspectiva.
     if (key == GLFW_KEY_P && action == GLFW_PRESS)

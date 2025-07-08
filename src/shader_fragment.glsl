@@ -38,6 +38,8 @@ uniform mat4 projection;
 #define BALLON_BIRTHDAY 12
 #define BALLON_HEART 13
 
+#define SPHERE 14
+
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -208,6 +210,14 @@ void main()
             Kd = texture(TextureImage9, vec2(U,V)).rgb;
             Ks = vec3(0.5, 0.5, 0.5);
             q = 40.0;
+            blinn_phong = pow(max(0,dot(n,h)), q);
+            // Aplicar as cores pixel a pixel (Phong shadding)
+            color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
+            break;
+        case SPHERE:
+            Kd = vec3(0.0, 0.0, 0.0);
+            Ks = vec3(0.4, 0.4, 0.4);
+            q = 64.0;
             blinn_phong = pow(max(0,dot(n,h)), q);
             // Aplicar as cores pixel a pixel (Phong shadding)
             color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
