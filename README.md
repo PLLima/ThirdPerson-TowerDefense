@@ -13,11 +13,11 @@ Julho, 2025
 
 ## Sumário:
 
-- [Contribuições de cada Autor](https://github.com/PLLima/ThirdPerson-TowerDefense/tree/main?tab=readme-ov-file#contribui%C3%A7%C3%B5es-de-cada-autor)
-- [Uso de Inteligência Artificial](https://github.com/PLLima/ThirdPerson-TowerDefense/tree/main?tab=readme-ov-file#uso-de-intelig%C3%AAncia-artificial)
-- [Instalação](https://github.com/PLLima/ThirdPerson-TowerDefense/tree/main?tab=readme-ov-file#instala%C3%A7%C3%A3o)
-- [Funcionamento da Aplicação](https://github.com/PLLima/ThirdPerson-TowerDefense/tree/main?tab=readme-ov-file#funcionamento-da-aplica%C3%A7%C3%A3o)
-- [Conceitos de Fundamentos de Computação Gráfica Aplicados](https://github.com/PLLima/ThirdPerson-TowerDefense/tree/main?tab=readme-ov-file#conceitos-de-fundamentos-de-computa%C3%A7%C3%A3o-gr%C3%A1fica-aplicados)
+- [Contribuições de cada Autor](#contribui%C3%A7%C3%B5es-de-cada-autor)
+- [Uso de Inteligência Artificial](#uso-de-intelig%C3%AAncia-artificial)
+- [Instalação](#instala%C3%A7%C3%A3o)
+- [Funcionamento da Aplicação](#funcionamento-da-aplica%C3%A7%C3%A3o)
+- [Conceitos de Fundamentos de Computação Gráfica Aplicados](#conceitos-de-fundamentos-de-computa%C3%A7%C3%A3o-gr%C3%A1fica-aplicados)
 
 ## Contribuições de cada Autor:
 
@@ -35,13 +35,48 @@ Para este projeto, utilizou-se o Gemini para gerar o código Python presente no 
 
 ## Instalação:
 
-Para instalar a aplicação, basta baixar os arquivos do repositório e realizar os seguintes comandos na pasta do repositório:
+Para instalar e rodar a aplicação, basta baixar os arquivos do repositório e realizar os seguintes comandos na pasta do repositório:
 
 - Linux (GNOME):
 
-``` make run```
+```
+make run
+```
 
 ## Funcionamento da Aplicação:
+
+Com a aplicação aberta, o jogador se depara com uma câmera fixa observando a torre, o tanque e a rua por onde os balões inimigos passarão:
+
+![Cenário inicial do jogo](img/Fixed%20Camera.png)
+
+Nesse contexto, tanto a torre, quanto o tanque estão com as suas vidas cheias. O jogo consiste em defender a torre atirando nos balões através do tanque. Para controlar o tanque, existem as seguintes teclas:
+
+| Tecla | Ação |
+| --- | --- |
+| <kbd>←</kbd> / <kbd>↑</kbd> / <kbd>→</kbd> / <kbd>↓</kbd> | Mover o tanque na direção indicada pelas flechas. Para realizar uma curva, é necessário pressionar as teclas horizontais junto das teclas verticais. |
+| <kbd>espaço</kbd> | Atirar na direção para a qual o canhão do tanque está apontado. |
+
+Pode-se utilizar também as seguintes opções de câmera na aplicação através das teclas abaixo:
+
+| Tecla | Ação |
+| --- | --- |
+| <kbd>C</kbd> | Câmera totalmente livre, controlada por <kbd>W</kbd> / <kbd>A</kbd> / <kbd>S</kbd> / <kbd>D</kbd> e pela direção apontada pelo arraste do mouse (através do botão esquerdo do mouse). |
+| <kbd>V</kbd> | Câmera em terceira pessoa sobre o tanque. |
+| <kbd>B</kbd> | Câmera fixa sobre todo o cenário. |
+
+Ao selecionar a câmera em terceira pessoa, logo após disparar um tiro, obtém-se a seguinte visão do jogo:
+
+![Câmera em Terceira Pessoa](img/Tank%20Shooting.png)
+
+Como visto pelas figuras acima, há uma certa pontuação registrada. Cada balão inflige uma quantidade de dano distinta e também pontua de forma distinta. Ao atingir um certo valor de pontuação, o jogador vence o jogo:
+
+![Tela de Vitória](img/You%20Win.png)
+
+Caso a vida da torre chegue a zero, o jogo é perdido:
+
+![Tela de Derrota](img/Game%20Over.png)
+
+Caso queira sair do jogo à qualquer momento, basta pressionar a tecla <kbd>ESC</kbd>.
 
 ## Conceitos de Fundamentos de Computação Gráfica Aplicados:
 
