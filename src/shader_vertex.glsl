@@ -13,7 +13,7 @@ uniform mat4 projection;
 uniform int object_id;
 
 // Variáveis para acesso das imagens de textura
-uniform sampler2D TextureImage6;
+uniform sampler2D TextureImage8;
 
 // Atributos de vértice que serão gerados como saída ("out") pelo Vertex Shader.
 // ** Estes serão interpolados pelo rasterizador! ** gerando, assim, valores
@@ -25,7 +25,7 @@ out vec4 normal;
 out vec2 texcoords;
 out vec4 color_v;
 
-#define DARTLING_TOWER 10
+#define DARTLING_TOWER 11
 
 void main()
 {
@@ -105,7 +105,7 @@ void main()
         float lambert = max(0,dot(n,l));
         float blinn_phong = pow(max(0,dot(n,h)), q);
 
-        Kd = texture(TextureImage6, vec2(U,V)).rgb;
+        Kd = texture(TextureImage8, vec2(U,V)).rgb;
         // Aplicar as cores vértice à vértice (Gourad shadding)
         color_v.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
         color_v.a = 1;

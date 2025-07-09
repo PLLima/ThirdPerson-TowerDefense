@@ -26,19 +26,20 @@ uniform mat4 projection;
 #define FACE_3 3
 #define FACE_4 4
 #define FACE_5 5
-#define ROAD   6
+#define ROAD 6
+#define GRASS 7
 
-#define TANK_0 7
-#define TANK_1 8
-#define TANK_2 9
+#define TANK_0 8
+#define TANK_1 9
+#define TANK_2 10
 
-#define DARTLING_TOWER 10
+#define DARTLING_TOWER 11
 
-#define BALLON_RED 11
-#define BALLON_BIRTHDAY 12
-#define BALLON_HEART 13
+#define BALLON_RED 12
+#define BALLON_BIRTHDAY 13
+#define BALLON_HEART 14
 
-#define SPHERE 14
+#define SPHERE 15
 
 uniform int object_id;
 
@@ -59,8 +60,6 @@ uniform sampler2D TextureImage8;
 uniform sampler2D TextureImage9;
 uniform sampler2D TextureImage10;
 uniform sampler2D TextureImage11;
-uniform sampler2D TextureImage12;
-uniform sampler2D TextureImage13;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
@@ -171,18 +170,26 @@ void main()
             // Aplicar as cores pixel a pixel (Phong shadding)
             color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
-        case TANK_0: // Tank Barrel
+        case GRASS: // Grass Patch
             Kd = texture(TextureImage3, vec2(U,V)).rgb;
+            Ks = texture(TextureImage4, vec2(U,V)).rgb;
+            q = 50.0;
+            blinn_phong = pow(max(0,dot(n,h)), q);
+            // Aplicar as cores pixel a pixel (Phong shadding)
+            color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
+            break;
+        case TANK_0: // Tank Barrel
+            Kd = texture(TextureImage5, vec2(U,V)).rgb;
             // Aplicar as cores pixel a pixel (Phong shadding)
             color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case TANK_1: // Tank Base
-            Kd = texture(TextureImage4, vec2(U,V)).rgb;
+            Kd = texture(TextureImage6, vec2(U,V)).rgb;
             // Aplicar as cores pixel a pixel (Phong shadding)
             color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case TANK_2: // Tank Wheels
-            Kd = texture(TextureImage5, vec2(U,V)).rgb;
+            Kd = texture(TextureImage7, vec2(U,V)).rgb;
             // Aplicar as cores pixel a pixel (Phong shadding)
             color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
@@ -191,7 +198,7 @@ void main()
             color = color_v;
             break;
         case BALLON_RED:
-            Kd = texture(TextureImage7, vec2(U,V)).rgb;
+            Kd = texture(TextureImage9, vec2(U,V)).rgb;
             Ks = vec3(1.0, 1.0, 1.0);
             q = 40.0;
             blinn_phong = pow(max(0,dot(n,h)), q);
@@ -199,7 +206,7 @@ void main()
             color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case BALLON_BIRTHDAY:
-            Kd = texture(TextureImage8, vec2(U,V)).rgb;
+            Kd = texture(TextureImage10, vec2(U,V)).rgb;
             Ks = vec3(1.0, 1.0, 1.0);
             q = 40.0;
             blinn_phong = pow(max(0,dot(n,h)), q);
@@ -207,7 +214,7 @@ void main()
             color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case BALLON_HEART:
-            Kd = texture(TextureImage9, vec2(U,V)).rgb;
+            Kd = texture(TextureImage11, vec2(U,V)).rgb;
             Ks = vec3(0.5, 0.5, 0.5);
             q = 40.0;
             blinn_phong = pow(max(0,dot(n,h)), q);
