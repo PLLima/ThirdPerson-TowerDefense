@@ -7,6 +7,15 @@
 - Pedro Lubaszewski Lima
 - Thiago Frazzon Arend
 
+## Data de Conclusão:
+
+Julho, 2025
+
+## Sumário:
+
+- [Contribuições de cada Autor](https://github.com/PLLima/ThirdPerson-TowerDefense/tree/main?tab=readme-ov-file#contribui%C3%A7%C3%B5es-de-cada-autor)
+
+
 ## Contribuições de cada Autor:
 
 - **Seleção/importação de texturas e criação do cenário (paredes e estrada):** Thiago Arend
