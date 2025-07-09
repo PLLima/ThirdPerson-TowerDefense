@@ -187,7 +187,7 @@ float g_AngleZ = 0.0f;
 
 float g_TankRotationAngle = 0.0f; // Ângulo de rotação do tanque
 float g_TankBarrelRotation = 0.0f;
-glm::vec4 g_TankPosition = glm::vec4(10000.0f, -4620.0f, 3000.0f, 1.0f);            // Posição global do tanque
+glm::vec4 g_TankPosition = glm::vec4(10000.0f, -4620.0f, 5000.0f, 1.0f);            // Posição global do tanque
 glm::vec4 g_TankProjectilePosition = glm::vec4(-0.12f, 0.36f, -1.24f, 1.0f);        // Posição do projétil do tanque
 glm::vec4 g_TowerProjectilePosition = glm::vec4(15000.0f, -4850.0f, 3000.0f, 1.0f); // Posição do projétil da toore
 bool g_UpKeyPressed = false;
@@ -1996,12 +1996,12 @@ void TextRendering_ShowGameInformation(GLFWwindow *window)
         if (g_TowerLife == 0)
         {
             snprintf(buffer, 85, "GAME OVER [PRESSIONE ENTER PARA JOGAR NOVAMENTE]");
-            TextRendering_PrintString(window, buffer, -1.0f + 150 * pad / 10, -1.0f + 220 * pad / 10, 1.0f);
+            TextRendering_PrintString(window, buffer, -1.0f + 250 * pad / 10, -1.0f + 2 * pad / 10, 1.0f);
         }
         else if (g_PlayerPoints >= 100.0)
         {
             snprintf(buffer, 85, "VOCE VENCEU! [PRESSIONE ENTER PARA JOGAR NOVAMENTE]");
-            TextRendering_PrintString(window, buffer, -1.0f + 150 * pad / 10, -1.0f + 220 * pad / 10, 1.0f);
+            TextRendering_PrintString(window, buffer, -1.0f + 250 * pad / 10, -1.0f + 2 * pad / 10, 1.0f);
         }
     }
     else
@@ -2009,7 +2009,7 @@ void TextRendering_ShowGameInformation(GLFWwindow *window)
         snprintf(buffer, 85, "TORRE = %.2f     TANQUE = %.2f     PONTUACAO = %.2f",
                  g_TowerLife, g_TankLife, g_PlayerPoints);
 
-        TextRendering_PrintString(window, buffer, -1.0f + pad / 10, -1.0f + 2 * pad / 10, 1.0f);
+        TextRendering_PrintString(window, buffer, -1.0f + 250 * pad / 10, -1.0f + 2 * pad / 10, 1.0f);
     }
 }
 
