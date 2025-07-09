@@ -197,7 +197,7 @@ bool g_RightKeyPressed = false;
 bool g_KeySpacePressed = false;
 bool g_KeyEnterPressed = false;
 
-float g_TankLife = 100.0f;
+float g_TankLife = 50.0f;
 float g_TowerLife = 100.0f;
 
 // "g_LeftMouseButtonPressed = true" se o usuário está com o botão esquerdo do mouse
@@ -253,14 +253,6 @@ const glm::vec3 tower_bbox_max = glm::vec3(0.447274f, 0.552190f, 1.25f);
 // vértices máximos e mínimos coletados do .obj da esfera
 const glm::vec3 sphere_bbox_min = glm::vec3(-1.0f, -1.0f, -1.0f);
 const glm::vec3 sphere_bbox_max = glm::vec3(1.0f, 1.0f, 1.0f);
-
-// Variáveis que controlam rotação do antebraço
-float g_ForearmAngleZ = 0.0f;
-float g_ForearmAngleX = 0.0f;
-
-// Variáveis que controlam translação do torso
-float g_TorsoPositionX = 0.0f;
-float g_TorsoPositionY = 0.0f;
 
 // Variável que controla o tipo de projeção utilizada: perspectiva ou ortográfica.
 bool g_UsePerspectiveProjection = true;
@@ -439,18 +431,18 @@ int main(int argc, char *argv[])
     float ballon_red_time = 0.0f;
     float ballon_birthday_time = 0.0f;
     float ballon_heart_time = 0.0f;
-    float ballon_red_speed = 0.125f;
-    float ballon_birthday_speed = 0.06125f;
-    float ballon_heart_speed = 0.25f;
+    float ballon_red_speed = 0.45f;
+    float ballon_birthday_speed = 0.375f;
+    float ballon_heart_speed = 0.55f;
     bool ballon_red_is_visible = true;
-    float ballon_red_damage = 10.0f;
+    float ballon_red_damage = 5.0f;
     bool ballon_heart_is_visible = true;
-    float ballon_heart_damage = 20.0f;
+    float ballon_heart_damage = 2.5f;
     bool ballon_birthday_is_visible = true;
-    float ballon_birthday_damage = 30.0f;
+    float ballon_birthday_damage = 7.5f;
     float ballon_red_points = 5.0f;
-    float ballon_heart_points = 10.0f;
-    float ballon_birthday_points = 15.0f;
+    float ballon_heart_points = 7.5f;
+    float ballon_birthday_points = 10.0f;
     bool sphere_is_visible = false;
     glm::vec4 camera_position_c = glm::vec4(10000.0f, 6200.0f, 2999.0f, 1.0f); // Ponto "c", centro da câmera
     glm::vec4 camera_up_vector = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);            // Vetor "up" fixado para apontar para o "céu" (eito Y global)
@@ -636,7 +628,7 @@ int main(int argc, char *argv[])
         // variáveis de controle do tanque
         float tank_speed = 900.0f;
         float tank_rotation_speed = M_PI / 3;
-        float projectile_speed = 10.0f;
+        float projectile_speed = 15.0f;
         float push_back_distance = 50.0f; // unidades para empurrar para fora da parede em caso de colisão
         // direção de movimento do tanque
         glm::vec4 tank_direction = glm::vec4(-sin(g_TankRotationAngle), 0.0f, -cos(g_TankRotationAngle), 0.0f);
@@ -1013,8 +1005,8 @@ int main(int argc, char *argv[])
                 g_GameLoopIsOn = true;
 
                 // reseta algumas variaveis de controle globais
-                g_TankPosition = glm::vec4(10000.0f, -4620.0f, 3000.0f, 1.0f); // retorna o tanque para a posição orginal
-                g_TankLife = 100.0f;
+                g_TankPosition = glm::vec4(10000.0f, -4620.0f, 5000.0f, 1.0f); // retorna o tanque para a posição orginal
+                g_TankLife = 50.0f;
                 g_TowerLife = 100.0f;
                 g_PlayerPoints = 0.0f;
             }
@@ -1675,38 +1667,6 @@ void CursorPosCallback(GLFWwindow *window, double xpos, double ypos)
 
         if (g_CameraPhi < phimin)
             g_CameraPhi = phimin;
-
-        // Atualizamos as variáveis globais para armazenar a posição atual do
-        // cursor como sendo a última posição conhecida do cursor.
-        g_LastCursorPosX = xpos;
-        g_LastCursorPosY = ypos;
-    }
-
-    if (g_RightMouseButtonPressed)
-    {
-        // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
-        float dx = xpos - g_LastCursorPosX;
-        float dy = ypos - g_LastCursorPosY;
-
-        // Atualizamos parâmetros da antebraço com os deslocamentos
-        g_ForearmAngleZ -= 0.01f * dx;
-        g_ForearmAngleX += 0.01f * dy;
-
-        // Atualizamos as variáveis globais para armazenar a posição atual do
-        // cursor como sendo a última posição conhecida do cursor.
-        g_LastCursorPosX = xpos;
-        g_LastCursorPosY = ypos;
-    }
-
-    if (g_MiddleMouseButtonPressed)
-    {
-        // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
-        float dx = xpos - g_LastCursorPosX;
-        float dy = ypos - g_LastCursorPosY;
-
-        // Atualizamos parâmetros da antebraço com os deslocamentos
-        g_TorsoPositionX += 0.01f * dx;
-        g_TorsoPositionY -= 0.01f * dy;
 
         // Atualizamos as variáveis globais para armazenar a posição atual do
         // cursor como sendo a última posição conhecida do cursor.
