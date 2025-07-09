@@ -238,13 +238,13 @@ const glm::vec3 tank_bbox_max = glm::vec3(0.447274f, 0.552190f, 1.25f);
 const glm::vec3 ballon_red_bbox_min = glm::vec3(-1.030526f, 0.000000f, -0.921698f);
 const glm::vec3 ballon_red_bbox_max = glm::vec3(1.238787f, 2.474031f, 2.363923f);
 
-// vértices máximos e mínimos coletados do .obj do birthday_ballon
-const glm::vec3 birthday_ballon_bbox_min = glm::vec3(-0.586542f, -1.250000f, -1.217028f);
-const glm::vec3 birthday_ballon_bbox_max = glm::vec3(0.591365f, 1.250000f, 1.212138f);
+// vértices máximos e mínimos coletados do .obj do ballon_birthday
+const glm::vec3 ballon_birthday_bbox_min = glm::vec3(-0.586542f, -1.250000f, -1.217028f);
+const glm::vec3 ballon_birthday_bbox_max = glm::vec3(0.591365f, 1.250000f, 1.212138f);
 
-// vértices máximos e mínimos coletados do .obj do heart_ballon
-const glm::vec3 heart_ballon_bbox_min = glm::vec3(-1.088844f, 0.156203f, -1.036875f);
-const glm::vec3 heart_ballon_bbox_max = glm::vec3(1.222942f, 1.592713f, 2.363923f);
+// vértices máximos e mínimos coletados do .obj do ballon_heart
+const glm::vec3 ballon_heart_bbox_min = glm::vec3(-1.088844f, 0.156203f, -1.036875f);
+const glm::vec3 ballon_heart_bbox_max = glm::vec3(1.222942f, 1.592713f, 2.363923f);
 
 // vértices máximos e mínimos coletados do .obj da torre
 const glm::vec3 tower_bbox_min = glm::vec3(-0.447274f, -0.552903f, -1.25f);
@@ -438,13 +438,13 @@ int main(int argc, char *argv[])
     float ballon_heart_speed = 0.25f;
     bool ballon_red_is_visible = true;
     float ballon_red_damage = 10.0f;
-    bool heart_ballon_is_visible = true;
-    float heart_ballon_damage = 20.0f;
-    bool birthday_ballon_is_visible = true;
-    float birthday_ballon_damage = 30.0f;
+    bool ballon_heart_is_visible = true;
+    float ballon_heart_damage = 20.0f;
+    bool ballon_birthday_is_visible = true;
+    float ballon_birthday_damage = 30.0f;
     float ballon_red_points = 5.0f;
-    float heart_ballon_points = 10.0f;
-    float birthday_ballon_points = 15.0f;
+    float ballon_heart_points = 10.0f;
+    float ballon_birthday_points = 15.0f;
     bool sphere_is_visible = false;
     glm::vec4 camera_position_c = glm::vec4(10000.0f, 6200.0f, 2999.0f, 1.0f); // Ponto "c", centro da câmera
     glm::vec4 camera_up_vector = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);            // Vetor "up" fixado para apontar para o "céu" (eito Y global)
@@ -770,11 +770,11 @@ int main(int argc, char *argv[])
         // definimos a bbox do ballon_red antes da transformação pela matriz model
         std::vector<glm::vec3> ballon_red_model_bbox = Compute_Model_BBox(ballon_red_bbox_min, ballon_red_bbox_max);
         
-        // definimos a bbox do birthday_ballon antes da transformação pela matriz model
-        std::vector<glm::vec3> birthday_ballon_model_bbox = Compute_Model_BBox(birthday_ballon_bbox_min, birthday_ballon_bbox_max);
+        // definimos a bbox do ballon_birthday antes da transformação pela matriz model
+        std::vector<glm::vec3> ballon_birthday_model_bbox = Compute_Model_BBox(ballon_birthday_bbox_min, ballon_birthday_bbox_max);
         
-        // definimos a bbox do heart_ballon antes da transformação pela matriz model
-        std::vector<glm::vec3> heart_ballon_model_bbox = Compute_Model_BBox(heart_ballon_bbox_min, heart_ballon_bbox_max);  
+        // definimos a bbox do ballon_heart antes da transformação pela matriz model
+        std::vector<glm::vec3> ballon_heart_model_bbox = Compute_Model_BBox(ballon_heart_bbox_min, ballon_heart_bbox_max);  
 
         // desenhamos os modelos de inimigos
         ballon_red_time += delta_t;
@@ -804,20 +804,20 @@ int main(int argc, char *argv[])
                 Matrix_Scale(200.0f, 200.0f, 200.0f);
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BALLON_BIRTHDAY);
-        if (g_GameLoopIsOn && birthday_ballon_is_visible) DrawVirtualObject("ballon_birthday");
+        if (g_GameLoopIsOn && ballon_birthday_is_visible) DrawVirtualObject("ballon_birthday");
 
-        // definimos a bbox do birthday_ballon depois da transformação pela matriz model
-        std::vector<glm::vec3> birthday_ballon_world_bbox = Compute_World_BBox(model, birthday_ballon_model_bbox);        
+        // definimos a bbox do ballon_birthday depois da transformação pela matriz model
+        std::vector<glm::vec3> ballon_birthday_world_bbox = Compute_World_BBox(model, ballon_birthday_model_bbox);        
 
         model = Bezier_Translate(ballon_heart_time, ballon_heart_speed, bezier_p1, bezier_p2, bezier_p3, bezier_p4) *
                 Matrix_Rotate_Y(g_AngleY + current_time * 0.8f) *
                 Matrix_Scale(200.0f, 200.0f, 200.0f);
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BALLON_HEART);
-        if (g_GameLoopIsOn && heart_ballon_is_visible) DrawVirtualObject("ballon_heart");
+        if (g_GameLoopIsOn && ballon_heart_is_visible) DrawVirtualObject("ballon_heart");
 
-        // definimos a bbox do heart_ballon depois da transformação pela matriz model
-        std::vector<glm::vec3> heart_ballon_world_bbox = Compute_World_BBox(model, heart_ballon_model_bbox);         
+        // definimos a bbox do ballon_heart depois da transformação pela matriz model
+        std::vector<glm::vec3> ballon_heart_world_bbox = Compute_World_BBox(model, ballon_heart_model_bbox);         
 
         // verifica intersecção balao vermelho / tanque
         bool ballon_red_intercepts_tank = BBox_Intercepts_BBox(tank_world_bbox, ballon_red_world_bbox);
@@ -825,14 +825,14 @@ int main(int argc, char *argv[])
         bool ballon_red_intercepts_tower = BBox_Intercepts_BBox(tower_world_bbox, ballon_red_world_bbox);
 
         // verifica intersecção balao de aniversario / tanque
-        bool birthday_ballon_intercepts_tank = BBox_Intercepts_BBox(tank_world_bbox, birthday_ballon_world_bbox);
+        bool ballon_birthday_intercepts_tank = BBox_Intercepts_BBox(tank_world_bbox, ballon_birthday_world_bbox);
         // verifica intersecção balao de aniversario / torre
-        bool birthday_ballon_intercepts_tower = BBox_Intercepts_BBox(tower_world_bbox, birthday_ballon_world_bbox);
+        bool ballon_birthday_intercepts_tower = BBox_Intercepts_BBox(tower_world_bbox, ballon_birthday_world_bbox);
         
         // verifica intersecção balao de coração / tanque
-        bool heart_ballon_intercepts_tank = BBox_Intercepts_BBox(tank_world_bbox, heart_ballon_world_bbox);
+        bool ballon_heart_intercepts_tank = BBox_Intercepts_BBox(tank_world_bbox, ballon_heart_world_bbox);
         // verifica intersecção balao de coração / torre
-        bool heart_ballon_intercepts_tower = BBox_Intercepts_BBox(tower_world_bbox, heart_ballon_world_bbox);
+        bool ballon_heart_intercepts_tower = BBox_Intercepts_BBox(tower_world_bbox, ballon_heart_world_bbox);
         
         // verifica intersecção da esfera com cada um dos planos
         bool wall_0_intersects_sphere = BBox_Intercepts_Plane(sphere_world_bbox, wall_0_plane); // parede direita
@@ -843,9 +843,9 @@ int main(int argc, char *argv[])
         // verifica intersecção esfera / balão vermelho
         bool sphere_intercepts_ballon_red = BBox_Intercepts_BBox(sphere_world_bbox, ballon_red_world_bbox);
         // verifica intersecção esfera / balão anversario
-        bool sphere_intercepts_birthday_ballon = BBox_Intercepts_BBox(sphere_world_bbox, birthday_ballon_world_bbox);
+        bool sphere_intercepts_ballon_birthday = BBox_Intercepts_BBox(sphere_world_bbox, ballon_birthday_world_bbox);
         // verifica intersecção esfera / balão de coração
-        bool sphere_intercepts_heart_ballon = BBox_Intercepts_BBox(sphere_world_bbox, heart_ballon_world_bbox);        
+        bool sphere_intercepts_ballon_heart = BBox_Intercepts_BBox(sphere_world_bbox, ballon_heart_world_bbox);        
         
         // balão vermelho some se interceptado
         if (ballon_red_is_visible && ballon_red_intercepts_tower) {
@@ -869,45 +869,45 @@ int main(int argc, char *argv[])
         }
 
         // balão de aniversário some se interceptado
-        if (birthday_ballon_is_visible && birthday_ballon_intercepts_tower) {
-            g_TowerLife = std::max(0.0f, g_TowerLife - birthday_ballon_damage);
-            birthday_ballon_is_visible = false;
+        if (ballon_birthday_is_visible && ballon_birthday_intercepts_tower) {
+            g_TowerLife = std::max(0.0f, g_TowerLife - ballon_birthday_damage);
+            ballon_birthday_is_visible = false;
         }
-        else if (birthday_ballon_is_visible && birthday_ballon_intercepts_tank) {
-            g_TankLife = std::max(0.0f, g_TankLife - birthday_ballon_damage);
-            birthday_ballon_is_visible = false;
+        else if (ballon_birthday_is_visible && ballon_birthday_intercepts_tank) {
+            g_TankLife = std::max(0.0f, g_TankLife - ballon_birthday_damage);
+            ballon_birthday_is_visible = false;
         }
-        else if (birthday_ballon_is_visible && sphere_intercepts_birthday_ballon) {
+        else if (ballon_birthday_is_visible && sphere_intercepts_ballon_birthday) {
             g_KeySpacePressed = false;
-            birthday_ballon_is_visible = false;
+            ballon_birthday_is_visible = false;
             sphere_is_visible = false;
-            g_PlayerPoints += birthday_ballon_points;
+            g_PlayerPoints += ballon_birthday_points;
             g_TankProjectilePosition = projectile_initial_position;
         }        
         // balão de aniversário retorna no início da curva
         else if (ballon_birthday_time == 0.0) {
-            birthday_ballon_is_visible = true;
+            ballon_birthday_is_visible = true;
         }
         
         // balão de coração some se interceptado
-        if (heart_ballon_is_visible && heart_ballon_intercepts_tower) {
-            g_TowerLife = std::max(0.0f, g_TowerLife - heart_ballon_damage);
-            heart_ballon_is_visible = false;
+        if (ballon_heart_is_visible && ballon_heart_intercepts_tower) {
+            g_TowerLife = std::max(0.0f, g_TowerLife - ballon_heart_damage);
+            ballon_heart_is_visible = false;
         }
-        else if (heart_ballon_is_visible && heart_ballon_intercepts_tank) {
-            g_TankLife = std::max(0.0f, g_TankLife - heart_ballon_damage);
-            heart_ballon_is_visible = false;
+        else if (ballon_heart_is_visible && ballon_heart_intercepts_tank) {
+            g_TankLife = std::max(0.0f, g_TankLife - ballon_heart_damage);
+            ballon_heart_is_visible = false;
         }
-        else if (heart_ballon_is_visible && sphere_intercepts_heart_ballon) {
+        else if (ballon_heart_is_visible && sphere_intercepts_ballon_heart) {
             g_KeySpacePressed = false;
-            heart_ballon_is_visible = false;
+            ballon_heart_is_visible = false;
             sphere_is_visible = false;
-            g_PlayerPoints += heart_ballon_points;
+            g_PlayerPoints += ballon_heart_points;
             g_TankProjectilePosition = projectile_initial_position;
         }          
         // balão de coração retorna no início da curva
         else if (ballon_heart_time == 0.0) {
-            heart_ballon_is_visible = true;
+            ballon_heart_is_visible = true;
         }
 
         if (wall_0_intersects_sphere || 
