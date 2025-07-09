@@ -28,7 +28,7 @@ Julho, 2025
 
 ## Uso de Inteligência Artificial:
 
-Para este projeto, utilizou-se o Gemini para gerar o código Python presente no arquivo ```utils/flip_faces.py```, utilizado para corrigir a orientação das faces de alguns modelos. Além disso, o ChatGPT foi usado para entender e replicar o padrão de geração dos planos do cenário. Para esses usos que são mais básicos e repetitivos, esses modelos de Inteligência Artificial se desempenharam muito bem, otimizando a produtividade dos membros do projeto.
+Para este projeto, utilizou-se o Gemini para gerar o código Python presente no arquivo ```utils/flip_faces.py```, utilizado para corrigir a orientação das faces de alguns modelos. Além disso, o ChatGPT foi usado para entender e replicar o padrão de geração dos planos do cenário. Para esses usos que são mais básicos e repetitivos, esses modelos de Inteligência Artificial se desempenharam muito bem, otimizando a produtividade dos membros do projeto. Esse tipo de uso não prejudicou as experiências necessárias para o aprendizado da disciplina.
 
 ## Instalação:
 
@@ -37,3 +37,8 @@ Para instalar a aplicação, basta baixar os arquivos do repositório e realizar
 - Linux (GNOME):
 
 ``` make run```
+
+## Funcionamento da Aplicação:
+
+## Conceitos de Fundamentos de Computação Gráfica Aplicados:
+
