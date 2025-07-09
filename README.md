@@ -14,7 +14,10 @@ Julho, 2025
 ## Sumário:
 
 - [Contribuições de cada Autor](https://github.com/PLLima/ThirdPerson-TowerDefense/tree/main?tab=readme-ov-file#contribui%C3%A7%C3%B5es-de-cada-autor)
-
+- [Uso de Inteligência Artificial](https://github.com/PLLima/ThirdPerson-TowerDefense/tree/main?tab=readme-ov-file#uso-de-intelig%C3%AAncia-artificial)
+- [Instalação](https://github.com/PLLima/ThirdPerson-TowerDefense/tree/main?tab=readme-ov-file#instala%C3%A7%C3%A3o)
+- [Funcionamento da Aplicação](https://github.com/PLLima/ThirdPerson-TowerDefense/tree/main?tab=readme-ov-file#funcionamento-da-aplica%C3%A7%C3%A3o)
+- [Conceitos de Fundamentos de Computação Gráfica Aplicados](https://github.com/PLLima/ThirdPerson-TowerDefense/tree/main?tab=readme-ov-file#conceitos-de-fundamentos-de-computa%C3%A7%C3%A3o-gr%C3%A1fica-aplicados)
 
 ## Contribuições de cada Autor:
 
