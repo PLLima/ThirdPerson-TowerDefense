@@ -215,7 +215,7 @@ void main()
             color.rgb = Kd * (lambert + Ka) + Ks * blinn_phong;
             break;
         case SPHERE:
-            Kd = vec3(0.0, 0.0, 0.0);
+            Kd = texture(TextureImage2, vec2(U,V)).rgb;
             Ks = vec3(0.4, 0.4, 0.4);
             q = 64.0;
             blinn_phong = pow(max(0,dot(n,h)), q);
