@@ -164,7 +164,32 @@ bool BBox_Intercepts_Plane(const std::vector<glm::vec3> world_corners, const glm
 
 - Esfera-Plano:
 ```
+bool Plane_Intercepts_Sphere(const glm::vec4& plane,
+                             const glm::mat4& model,
+                             const glm::vec3& local_center,
+                             float local_radius)
+{                             
+    // Transforma centro para coordenadas de mundo
+    glm::vec3 world_center = glm::vec3(model * glm::vec4(local_center, 1.0f));
 
+    // Extrai escala da matriz (cada coluna representa um eixo transformado)
+    float scale_x = glm::length(glm::vec3(model[0])); // coluna 0
+    float scale_y = glm::length(glm::vec3(model[1])); // coluna 1
+    float scale_z = glm::length(glm::vec3(model[2])); // coluna 2
+
+    // Usa a maior escala para garantir que o raio continue englobando o modelo
+    float max_scale = std::max({scale_x, scale_y, scale_z});
+    float world_radius = local_radius * max_scale;
+
+    // Calcula distância do centro ao plano
+    glm::vec3 normal = glm::vec3(plane);
+    float d = plane.w;
+
+    float signed_distance = glm::dot(normal, world_center) + d;
+
+    // Interseção se a distância (absoluta) for menor ou igual ao raio
+    return std::abs(signed_distance) <= world_radius;
+}
 ```
 
 - Paralelepipedo-Paralelepipedo:
