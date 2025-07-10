@@ -254,6 +254,11 @@ const glm::vec3 tower_bbox_max = glm::vec3(0.447274f, 0.552190f, 1.25f);
 const glm::vec3 sphere_bbox_min = glm::vec3(-1.0f, -1.0f, -1.0f);
 const glm::vec3 sphere_bbox_max = glm::vec3(1.0f, 1.0f, 1.0f);
 
+// centro da esfera para gerar a esphere boundingbox
+glm::vec3 sphere_center = glm::vec3(g_TankProjectilePosition);
+// raio da esfera para a sphere boundingbox
+float sphere_radius = 1.73f;
+
 // Variável que controla o tipo de projeção utilizada: perspectiva ou ortográfica.
 bool g_UsePerspectiveProjection = true;
 
@@ -691,6 +696,12 @@ int main(int argc, char *argv[])
 
         std::vector<glm::vec3> sphere_world_bbox;
 
+        // verifica intersecção da esfera com cada um dos planos
+        bool wall_0_intersects_sphere = false; // parede direita
+        bool wall_1_intersects_sphere = false; // parede superior
+        bool wall_2_intersects_sphere = false; // parede superior
+        bool wall_3_intersects_sphere = false; // parede inferior       
+
         for (int tank_part = 0; tank_part < 3; tank_part++)
         {
             PushMatrix(model);
@@ -714,6 +725,12 @@ int main(int argc, char *argv[])
                 glUniform1i(g_object_id_uniform, SPHERE);
                 if (sphere_is_visible && (g_GameLoopIsOn && g_TankLife > 0))
                     DrawVirtualObject("the_sphere");
+
+                // verifica intersecção da esfera com cada um dos planos
+                wall_0_intersects_sphere = Plane_Intercepts_Sphere(wall_0_plane, model, sphere_center, sphere_radius); // parede direita
+                wall_1_intersects_sphere = Plane_Intercepts_Sphere(wall_1_plane, model, sphere_center, sphere_radius); // parede esquerda
+                wall_2_intersects_sphere = Plane_Intercepts_Sphere(wall_2_plane, model, sphere_center, sphere_radius); // parede superior
+                wall_3_intersects_sphere = Plane_Intercepts_Sphere(wall_3_plane, model, sphere_center, sphere_radius); // parede inferior                   
 
                 // definimos a bbox da esfera depois da transformação pela matriz model
                 sphere_world_bbox = Compute_World_BBox(model, sphere_model_bbox);
@@ -810,15 +827,7 @@ int main(int argc, char *argv[])
                 break;
             }
             PopMatrix(model);
-        }
-
-        // desenha a esfera da torre
-        model = model * Matrix_Translate(g_TowerProjectilePosition.x, g_TowerProjectilePosition.y - 700.0, g_TowerProjectilePosition.z) // para frente no +Z local
-                * Matrix_Scale(0.17f, 0.17f, 0.17f);                                                                                    // escala da esfera
-        glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, SPHERE);
-        if (g_GameLoopIsOn)
-            DrawVirtualObject("the_sphere");
+        }          
 
         // definimos a bbox do ballon_red antes da transformação pela matriz model
         std::vector<glm::vec3> ballon_red_model_bbox = Compute_Model_BBox(ballon_red_bbox_min, ballon_red_bbox_max);
@@ -889,12 +898,6 @@ int main(int argc, char *argv[])
         bool ballon_heart_intercepts_tank = BBox_Intercepts_BBox(tank_world_bbox, ballon_heart_world_bbox);
         // verifica intersecção balao de coração / torre
         bool ballon_heart_intercepts_tower = BBox_Intercepts_BBox(tower_world_bbox, ballon_heart_world_bbox);
-
-        // verifica intersecção da esfera com cada um dos planos
-        bool wall_0_intersects_sphere = BBox_Intercepts_Plane(sphere_world_bbox, wall_0_plane); // parede direita
-        bool wall_1_intersects_sphere = BBox_Intercepts_Plane(sphere_world_bbox, wall_1_plane); // parede esquerda
-        bool wall_2_intersects_sphere = BBox_Intercepts_Plane(sphere_world_bbox, wall_2_plane); // parede superior
-        bool wall_3_intersects_sphere = BBox_Intercepts_Plane(sphere_world_bbox, wall_3_plane); // parede inferior
 
         // verifica intersecção esfera / balão vermelho
         bool sphere_intercepts_ballon_red = BBox_Intercepts_BBox(sphere_world_bbox, ballon_red_world_bbox);
