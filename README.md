@@ -89,7 +89,7 @@ O sistema foi desenvolvido através da linguagem C++, gerenciador de processamen
 ![Balão de Coração](img/Ballon%20Heart.png)
 ![Grama](img/Grass%20Patch.jpg)
 
-A maioria desses modelos advêm do site [RigModels](https://rigmodels.com/). Sendo que pelo menos a torre e o tanque têm geometrias complexas (aproximadamente 10.000) faces.
+A maioria desses modelos advêm do site [RigModels](https://rigmodels.com/). Sendo que pelo menos a torre e o tanque têm geometrias complexas (aproximadamente 10.000 faces).
 
 Além disso, o cenário do jogo conta com a utilização de mais de uma instância do mesmo objeto (os tufos de grama):
 
